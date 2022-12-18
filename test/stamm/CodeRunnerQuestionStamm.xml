@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<!-- question: 2113235  -->
+  <question type="coderunner">
+    <name>
+      <text>Stämme</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Erstellen Sie ein Klassendiagramm (OOD) für das Objektdiagramm für die Stämme mit StarUML.</p><p dir="ltr" style="text-align: left;">Am Ende über File &gt; Export &gt; XMI das Diagramm exportieren und hier die xmi-Datei hochladen.<br></p><p dir="ltr" style="text-align: left;"><br></p><p dir="ltr" style="text-align: center;"><img src="https://moodle.oszimt.de/pluginfile.php/509225/mod_resource/content/3/Q1%20OOM%2020%2021%20L%C3%B6sung%20Herr%20der%20Kringel.png" alt="" role="presentation" class="img-fluid atto_image_button_text-bottom" width="613" height="438"></p><p dir="ltr" style="text-align: left;">Am Ende abgeben nicht vergessen!<br></p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>0</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>2</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload># Dieses Feld wird ignoriert. Bitte nur das Diagramm als Anhang hochladen.</answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template><![CDATA[import os
+
+files = [fname for fname in os.listdir() if fname.endswith('.py')]
+if len(files) == 1:
+	import diagramLib as dL
+else:
+    raise Exception("No diagramLib.py support file found!")
+
+__student_answer__ = """{{ STUDENT_ANSWER | e('py') }}"""
+
+dL.load_file("{{ ATTACHMENTS | e('py') }}")
+
+SEPARATOR = "#<ab@17943918#@>#"
+
+{% for TEST in TESTCASES %}
+{{ TEST.testcode }}
+{% if not loop.last %}
+print(SEPARATOR)
+{% endif %}
+{% endfor %}]]></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <templateparamslang>None</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>1</attachments>
+    <attachmentsrequired>1</attachmentsrequired>
+    <maxfilesize>1048576</maxfilesize>
+    <filenamesregex>.+\.xmi</filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_class("Stamm")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Klasse Stamm existiert.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_attribute("Stamm", "name", "String")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>In Klasse Stamm existiert Attribut name mit Datentyp String.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_attribute("Stamm", "gruendung", "int")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>In Klasse Stamm existiert Attribut gruendung mit Datentyp int.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_class("Zwerg")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Klasse Zwerg existiert.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_attribute("Zwerg", "name", "String")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>In Klasse Zwerg existiert Attribut name mit Datentyp String.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_attribute("Zwerg", "alter", "int")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>In Klasse Zwerg existiert Attribut alter mit Datentyp int.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_attribute("Zwerg", "machtfaktor", "int")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>In Klasse Zwerg existiert Attribut machtfaktor mit Datentyp int.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_class("MagischerGegenstand")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Klasse MagischerGegenstand existiert.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_attribute("MagischerGegenstand", "typ", "String")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>In Klasse MagischerGegenstand existiert Attribut typ mit Datentyp String.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_attribute("MagischerGegenstand", "faktor", "int")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>In Klasse MagischerGegenstand existiert Attribut faktor mit Datentyp int.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_association("Zwerg","Stamm","*","1")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Beziehung zwischen Zwerg und Stamm existiert mit Multiplizität * und 1.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_association("Zwerg","MagischerGegenstand")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Beziehung zwischen Zwerg und MagischerGegenstand existiert.
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text><![CDATA[dL.exist_association("Stamm","MagischerGegenstand")]]></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Beziehung zwischen Stamm und MagischerGegenstand existiert nicht!
+</text>
+      </expected>
+      <extra>
+                <text></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+<file name="diagramLib.py" path="/" encoding="base64">IyBWZXJzaW9uIDINCg0KZnJvbSB4bWwuZG9tIGltcG9ydCBtaW5pZG9tDQoNCiMgZmlsZSA9IE5vbmUNCg0KDQpkZWYgX2F0dChhdHQsIG5hbWUpOg0KICAgIHZhbHVlID0gYXR0LmF0dHJpYnV0ZXNbbmFtZV0udmFsdWUubG93ZXIoKQ0KICAgIHZhbHVlID0gdmFsdWUucmVwbGFjZSgiJTViIiwgIlsiKQ0KICAgIHZhbHVlID0gdmFsdWUucmVwbGFjZSgiJTVkIiwgIl0iKQ0KICAgIHJldHVybiB2YWx1ZQ0KDQoNCmRlZiBsb2FkX2ZpbGUobmFtZSk6DQogICAgZ2xvYmFsIGZpbGUNCiAgICBmaWxlID0gbWluaWRvbS5wYXJzZShuYW1lKQ0KDQoNCmRlZiBnZXRfZGlhZ3JhbV9jbGFzcyhuYW1lKToNCiAgICBjbGFzc2VzID0gZmlsZS5nZXRFbGVtZW50c0J5VGFnTmFtZSgncGFja2FnZWRFbGVtZW50JykNCiAgICBmb3IgZSBpbiBjbGFzc2VzOg0KICAgICAgICBpZiBlLmF0dHJpYnV0ZXNbJ3htaTp0eXBlJ10udmFsdWUgPT0gInVtbDpDbGFzcyIgYW5kIGUuYXR0cmlidXRlc1snbmFtZSddLnZhbHVlLmxvd2VyKCkgPT0gbmFtZS5sb3dlcigpOg0KICAgICAgICAgICAgcmV0dXJuIGUNCiAgICByZXR1cm4gRmFsc2UNCg0KDQpkZWYgZ2V0X2RpYWdyYW1fYXR0cmlidXRlKGNuYW1lLCBuYW1lKToNCiAgICBjbCA9IGdldF9kaWFncmFtX2NsYXNzKGNuYW1lKQ0KICAgIGlmIG5vdCBjbDoNCiAgICAgICAgcmV0dXJuIEZhbHNlDQogICAgb2wgPSBjbC5nZXRFbGVtZW50c0J5VGFnTmFtZSgnb3duZWRBdHRyaWJ1dGUnKQ0KICAgIGZvciBlIGluIG9sOg0KICAgICAgICBpZiBlLmF0dHJpYnV0ZXNbJ3htaTp0eXBlJ10udmFsdWUgPT0gInVtbDpQcm9wZXJ0eSIgYW5kIGUuYXR0cmlidXRlc1snbmFtZSddLnZhbHVlLmxvd2VyKCkgPT0gbmFtZS5sb3dlcigpOg0KICAgICAgICAgICAgcmV0dXJuIGUNCiAgICByZXR1cm4gRmFsc2UNCg0KDQpkZWYgZ2V0X2RpYWdyYW1fbWV0aG9kKGNuYW1lLCBuYW1lKToNCiAgICBjbCA9IGdldF9kaWFncmFtX2NsYXNzKGNuYW1lKQ0KICAgIGlmIG5vdCBjbDoNCiAgICAgICAgcmV0dXJuIEZhbHNlDQogICAgb2wgPSBjbC5nZXRFbGVtZW50c0J5VGFnTmFtZSgnb3duZWRPcGVyYXRpb24nKQ0KICAgIGZvciBlIGluIG9sOg0KICAgICAgICBpZiBlLmF0dHJpYnV0ZXNbJ3htaTp0eXBlJ10udmFsdWUgPT0gInVtbDpPcGVyYXRpb24iIGFuZCBlLmF0dHJpYnV0ZXNbJ25hbWUnXS52YWx1ZS5sb3dlcigpID09IG5hbWUubG93ZXIoKToNCiAgICAgICAgICAgIHJldHVybiBlDQogICAgcmV0dXJuIEZhbHNlDQoNCg0KZGVmIGdldF9kaWFncmFtX2Fzc29jaWF0aW9uKGMxbmFtZSwgYzJuYW1lKToNCiAgICBpZDEgPSBnZXRfZGlhZ3JhbV9jbGFzcyhjMW5hbWUpLmF0dHJpYnV0ZXNbJ3htaTppZCddLnZhbHVlDQogICAgaWQxX2ZvdW5kID0gRmFsc2UNCiAgICBpZDIgPSBnZXRfZGlhZ3JhbV9jbGFzcyhjMm5hbWUpLmF0dHJpYnV0ZXNbJ3htaTppZCddLnZhbHVlDQogICAgaWQyX2ZvdW5kID0gRmFsc2UNCiAgICBhc3MgPSBmaWxlLmdldEVsZW1lbnRzQnlUYWdOYW1lKCdvd25lZE1lbWJlcicpDQogICAgZm9yIGUgaW4gYXNzOg0KICAgICAgICBpZiBub3QgZS5hdHRyaWJ1dGVzWyd4bWk6dHlwZSddLnZhbHVlID09ICJ1bWw6QXNzb2NpYXRpb24iOg0KICAgICAgICAgICAgY29udGludWUNCg0KICAgICAgICBlbmRzID0gZS5nZXRFbGVtZW50c0J5VGFnTmFtZSgnb3duZWRFbmQnKQ0KICAgICAgICBmb3IgZW4gaW4gZW5kczoNCiAgICAgICAgICAgIGlmIG5vdCBpZDFfZm91bmQgYW5kIGVuLmF0dHJpYnV0ZXNbJ3R5cGUnXS52YWx1ZSA9PSBpZDE6DQogICAgICAgICAgICAgICAgaWQxX2ZvdW5kID0gVHJ1ZQ0KICAgICAgICAgICAgICAgIGNvbnRpbnVlDQogICAgICAgICAgICBpZiBub3QgaWQyX2ZvdW5kIGFuZCBlbi5hdHRyaWJ1dGVzWyd0eXBlJ10udmFsdWUgPT0gaWQyOg0KICAgICAgICAgICAgICAgIGlkMl9mb3VuZCA9IFRydWUNCiAgICAgICAgICAgICAgICBjb250aW51ZQ0KICAgICAgICBpZiBpZDFfZm91bmQgYW5kIGlkMl9mb3VuZDoNCiAgICAgICAgICAgIHJldHVybiBlDQogICAgICAgIGVsc2U6DQogICAgICAgICAgICBpZDFfZm91bmQgPSBGYWxzZQ0KICAgICAgICAgICAgaWQyX2ZvdW5kID0gRmFsc2UNCiAgICByZXR1cm4gRmFsc2UNCg0KDQpkZWYgZXhpc3RfY2xhc3MobmFtZSk6DQogICAgcHJpbnQoIktsYXNzZSIsbmFtZSwiZXhpc3RpZXJ0IiwgZW5kPSIiKQ0KICAgIGlmIG5vdCBnZXRfZGlhZ3JhbV9jbGFzcyhuYW1lKToNCiAgICAgICAgcHJpbnQoIiBuaWNodCEiKQ0KICAgIGVsc2U6DQogICAgICAgIHByaW50KCIuIikNCg0KDQpkZWYgZXhpc3RfYXR0cmlidXRlKGNuYW1lLCBuYW1lLCBkYXRhPU5vbmUpOg0KICAgIHByaW50KCJJbiBLbGFzc2UiLCBjbmFtZSwgImV4aXN0aWVydCBBdHRyaWJ1dCIsIG5hbWUsIGVuZD0iIikNCiAgICBhdHQgPSBnZXRfZGlhZ3JhbV9hdHRyaWJ1dGUoY25hbWUsIG5hbWUpDQogICAgaWYgbm90IGF0dDoNCiAgICAgICAgcHJpbnQoIiBuaWNodCEiKQ0KICAgICAgICByZXR1cm4NCg0KICAgIGlmIG5vdCBhdHQuYXR0cmlidXRlc1sndmlzaWJpbGl0eSddLnZhbHVlID09ICJwcml2YXRlIjoNCiAgICAgICAgcHJpbnQoIiBtaXQgZmFsc2NoZXIgU2ljaHRiYXJrZWl0ISIpDQoNCiAgICBpZiBkYXRhIGlzIE5vbmU6DQogICAgICAgIHByaW50KCIuIikNCiAgICAgICAgcmV0dXJuDQoNCiAgICBwcmludCgiIG1pdCBEYXRlbnR5cCIsZGF0YSwgZW5kPSIiKQ0KICAgIGlmIG5vdCBfYXR0KGF0dCwndHlwZScpWzotM10gPT0gZGF0YS5sb3dlcigpOg0KICAgICAgICBwcmludCgiIG5pY2h0ISIpDQogICAgZWxzZToNCiAgICAgICAgcHJpbnQoIi4iKQ0KDQoNCmRlZiBleGlzdF9tZXRob2QoY25hbWUsIG5hbWUsIHBhcmFtZXRlcl9pbj1Ob25lLCBwYXJhbWV0ZXJfb3V0PU5vbmUpOg0KICAgIHByaW50KCJJbiBLbGFzc2UiLCBjbmFtZSwgImV4aXN0aWVydCBNZXRob2RlIiwgbmFtZSwgZW5kPSIiKQ0KICAgIGF0dCA9IGdldF9kaWFncmFtX21ldGhvZChjbmFtZSwgbmFtZSkNCiAgICBpZiBub3QgYXR0Og0KICAgICAgICBwcmludCgiIG5pY2h0ISIpDQogICAgICAgIHJldHVybg0KDQogICAgaWYgcGFyYW1ldGVyX2luIGlzIE5vbmUgb3IgcGFyYW1ldGVyX291dCBpcyBOb25lOg0KICAgICAgICBwcmludCgiLiIpDQogICAgICAgIHJldHVybg0KDQogICAgcGFyYW1ldGVyX2luX2ZvdW5kID0gRmFsc2UNCiAgICBpZiBwYXJhbWV0ZXJfaW4gaXMgbm90IE5vbmU6DQogICAgICAgIHByaW50KCIgbWl0IFBhcmFtZXRlciIsIHBhcmFtZXRlcl9pbiwgZW5kPSIiKQ0KICAgICAgICBmb3IgcCBpbiBhdHQuZ2V0RWxlbWVudHNCeVRhZ05hbWUoJ293bmVkUGFyYW1ldGVyJyk6DQogICAgICAgICAgICBpZiBwLmF0dHJpYnV0ZXNbJ2RpcmVjdGlvbiddLnZhbHVlID09ICJpbiIgYW5kIF9hdHQocCwnbmFtZScpID09IHBhcmFtZXRlcl9pbi5sb3dlcigpOg0KICAgICAgICAgICAgICAgIHBhcmFtZXRlcl9pbl9mb3VuZCA9IFRydWUNCg0KICAgIHBhcmFtZXRlcl9vdXRfZm91bmQgPSBGYWxzZQ0KICAgIGlmIHBhcmFtZXRlcl9vdXQgaXMgbm90IE5vbmU6DQogICAgICAgIHByaW50KCIgbWl0IFJldHVybiIsIHBhcmFtZXRlcl9vdXQsIGVuZD0iIikNCiAgICAgICAgZm9yIHAgaW4gYXR0LmdldEVsZW1lbnRzQnlUYWdOYW1lKCdvd25lZFBhcmFtZXRlcicpOg0KICAgICAgICAgICAgaWYgcC5hdHRyaWJ1dGVzWydkaXJlY3Rpb24nXS52YWx1ZSA9PSAib3V0IiBhbmQgX2F0dChwLCduYW1lJykgPT0gcGFyYW1ldGVyX2luLmxvd2VyKCk6DQogICAgICAgICAgICAgICAgcGFyYW1ldGVyX291dF9mb3VuZCA9IFRydWUNCg0KICAgIGlmIChwYXJhbWV0ZXJfaW4gaXMgbm90IE5vbmUgYW5kIHBhcmFtZXRlcl9pbl9mb3VuZCkgb3IgKHBhcmFtZXRlcl9vdXQgaXMgbm90IE5vbmUgYW5kIHBhcmFtZXRlcl9vdXRfZm91bmQpOg0KICAgICAgICBwcmludCgiLiIpDQogICAgZWxzZToNCiAgICAgICAgcHJpbnQoIiBuaWNodCEiKQ0KDQoNCmRlZiBleGlzdF9hc3NvY2lhdGlvbihjMW5hbWUsIGMybmFtZSwgYzFtdWx0aT1Ob25lLCBjMm11bHRpPU5vbmUpOg0KICAgIHByaW50KCJCZXppZWh1bmcgendpc2NoZW4iLGMxbmFtZSwidW5kIixjMm5hbWUsImV4aXN0aWVydCIsIGVuZD0iIikNCiAgICBhc3MgPSBnZXRfZGlhZ3JhbV9hc3NvY2lhdGlvbihjMW5hbWUsIGMybmFtZSkNCiAgICBpZiBjMW11bHRpIGlzIE5vbmU6DQogICAgICAgIGlmIG5vdCBhc3M6DQogICAgICAgICAgICBwcmludCgiIG5pY2h0ISIpDQogICAgICAgIGVsc2U6DQogICAgICAgICAgICBwcmludCgiLiIpDQogICAgZWxzZToNCiAgICAgICAgcHJpbnQoIiBtaXQgTXVsdGlwbGl6aXTDpHQiLGMxbXVsdGksInVuZCIsYzJtdWx0aSwgZW5kPSIiKQ0KICAgICAgICBpZDEgPSBnZXRfZGlhZ3JhbV9jbGFzcyhjMW5hbWUpLmF0dHJpYnV0ZXNbJ3htaTppZCddLnZhbHVlDQogICAgICAgIGlkMV9mb3VuZCA9IEZhbHNlDQogICAgICAgIGlkMiA9IGdldF9kaWFncmFtX2NsYXNzKGMybmFtZSkuYXR0cmlidXRlc1sneG1pOmlkJ10udmFsdWUNCiAgICAgICAgaWQyX2ZvdW5kID0gRmFsc2UNCg0KICAgICAgICBlbmRzID0gYXNzLmdldEVsZW1lbnRzQnlUYWdOYW1lKCdvd25lZEVuZCcpDQogICAgICAgIGZvciBlbiBpbiBlbmRzOg0KICAgICAgICAgICAgYSA9IGVuLmdldEVsZW1lbnRzQnlUYWdOYW1lKCdsb3dlclZhbHVlJylbMF0uYXR0cmlidXRlc1sidmFsdWUiXS52YWx1ZQ0KICAgICAgICAgICAgaWYgbm90IGlkMV9mb3VuZCBhbmQgZW4uYXR0cmlidXRlc1sndHlwZSddLnZhbHVlID09IGlkMSBhbmQgYSA9PSBjMW11bHRpOg0KICAgICAgICAgICAgICAgIGlkMV9mb3VuZCA9IFRydWUNCiAgICAgICAgICAgICAgICBjb250aW51ZQ0KICAgICAgICAgICAgaWYgbm90IGlkMl9mb3VuZCBhbmQgZW4uYXR0cmlidXRlc1sndHlwZSddLnZhbHVlID09IGlkMiBhbmQgYSA9PSBjMm11bHRpOg0KICAgICAgICAgICAgICAgIGlkMl9mb3VuZCA9IFRydWUNCiAgICAgICAgICAgICAgICBjb250aW51ZQ0KICAgICAgICBpZiBpZDFfZm91bmQgYW5kIGlkMl9mb3VuZDoNCiAgICAgICAgICAgIHByaW50KCIuIikNCiAgICAgICAgZWxzZToNCiAgICAgICAgICAgIHByaW50KCIgbmljaHQhIik=</file>
+    </testcases>
+    <answerfiles>
+<file name="Untitled2.xmi" path="/" encoding="base64">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHhtaTpYTUkgeG1pOnZlcnNpb249IjIuMSIgeG1sbnM6dW1sPSJodHRwOi8vc2NoZW1hLm9tZy5vcmcvc3BlYy9VTUwvMi4wIiB4bWxuczp4bWk9Imh0dHA6Ly9zY2hlbWEub21nLm9yZy9zcGVjL1hNSS8yLjEiPgoJPHhtaTpEb2N1bWVudGF0aW9uIGV4cG9ydGVyPSJTdGFyVU1MIiBleHBvcnRlclZlcnNpb249IjIuMCIvPgoJPHVtbDpNb2RlbCB4bWk6aWQ9IkFBQUFBQUdGSUNjVi9IQlU5alE9IiB4bWk6dHlwZT0idW1sOk1vZGVsIiBuYW1lPSJSb290TW9kZWwiPgoJCTxwYWNrYWdlZEVsZW1lbnQgeG1pOmlkPSJBQUFBQUFGRitxQldLNk0zWjhZPSIgbmFtZT0iTW9kZWwiIHZpc2liaWxpdHk9InB1YmxpYyIgeG1pOnR5cGU9InVtbDpNb2RlbCI+CgkJCTxwYWNrYWdlZEVsZW1lbnQgeG1pOmlkPSJBQUFBQUFHRkg2ZUJIQjVMd1JzPSIgbmFtZT0iWndlcmciIHZpc2liaWxpdHk9InB1YmxpYyIgaXNBYnN0cmFjdD0iZmFsc2UiIGlzRmluYWxTcGVjaWFsaXphdGlvbj0iZmFsc2UiIGlzTGVhZj0iZmFsc2UiIHhtaTp0eXBlPSJ1bWw6Q2xhc3MiIGlzQWN0aXZlPSJmYWxzZSI+CgkJCQk8b3duZWRNZW1iZXIgeG1pOmlkPSJBQUFBQUFHRkg2aHZxQjdZbmdnPSIgdmlzaWJpbGl0eT0icHVibGljIiB4bWk6dHlwZT0idW1sOkFzc29jaWF0aW9uIiBpc0Rlcml2ZWQ9ImZhbHNlIj4KCQkJCQk8b3duZWRFbmQgeG1pOmlkPSJBQUFBQUFHRkg2aHZxQjdaTldNPSIgdmlzaWJpbGl0eT0icHVibGljIiBpc1N0YXRpYz0iZmFsc2UiIGlzTGVhZj0iZmFsc2UiIGlzUmVhZE9ubHk9ImZhbHNlIiBpc09yZGVyZWQ9ImZhbHNlIiBpc1VuaXF1ZT0iZmFsc2UiIHhtaTp0eXBlPSJ1bWw6UHJvcGVydHkiIGFnZ3JlZ2F0aW9uPSJub25lIiBpc0Rlcml2ZWQ9ImZhbHNlIiBpc0lEPSJmYWxzZSIgdHlwZT0iQUFBQUFBR0ZINmVCSEI1THdScz0iPgoJCQkJCQk8eG1pOkV4dGVuc2lvbiBleHRlbmRlcj0iU3RhclVNTCI+CgkJCQkJCQk8c3RlcmVvdHlwZSB2YWx1ZT0iIi8+CgkJCQkJCTwveG1pOkV4dGVuc2lvbj4KCQkJCQk8L293bmVkRW5kPgoJCQkJCTxvd25lZEVuZCB4bWk6aWQ9IkFBQUFBQUdGSDZodnFCN2FvRzQ9IiB2aXNpYmlsaXR5PSJwdWJsaWMiIGlzU3RhdGljPSJmYWxzZSIgaXNMZWFmPSJmYWxzZSIgaXNSZWFkT25seT0iZmFsc2UiIGlzT3JkZXJlZD0iZmFsc2UiIGlzVW5pcXVlPSJmYWxzZSIgeG1pOnR5cGU9InVtbDpQcm9wZXJ0eSIgYWdncmVnYXRpb249Im5vbmUiIGlzRGVyaXZlZD0iZmFsc2UiIGlzSUQ9ImZhbHNlIiB0eXBlPSJBQUFBQUFHRkg2aHZteDZ2Y0tFPSI+CgkJCQkJCTx4bWk6RXh0ZW5zaW9uIGV4dGVuZGVyPSJTdGFyVU1MIj4KCQkJCQkJCTxzdGVyZW90eXBlIHZhbHVlPSIiLz4KCQkJCQkJPC94bWk6RXh0ZW5zaW9uPgoJCQkJCTwvb3duZWRFbmQ+CgkJCQkJPG1lbWJlckVuZCB4bWk6aWRyZWY9IkFBQUFBQUdGSDZodnFCN1pOV009Ii8+CgkJCQkJPG1lbWJlckVuZCB4bWk6aWRyZWY9IkFBQUFBQUdGSDZodnFCN2FvRzQ9Ii8+CgkJCQk8L293bmVkTWVtYmVyPgoJCQkJPG93bmVkTWVtYmVyIHhtaTppZD0iQUFBQUFBR0ZINm1yR3lJTC9ZMD0iIG5hbWU9ImhhdCIgdmlzaWJpbGl0eT0icHVibGljIiB4bWk6dHlwZT0idW1sOkFzc29jaWF0aW9uIiBpc0Rlcml2ZWQ9ImZhbHNlIj4KCQkJCQk8eG1pOkV4dGVuc2lvbiBleHRlbmRlcj0iU3RhclVNTCI+CgkJCQkJCTxzdGVyZW90eXBlIHZhbHVlPSIiLz4KCQkJCQk8L3htaTpFeHRlbnNpb24+CgkJCQkJPG93bmVkRW5kIHhtaTppZD0iQUFBQUFBR0ZINm1yR3lJTXFXcz0iIHZpc2liaWxpdHk9InB1YmxpYyIgaXNTdGF0aWM9ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiBpc1JlYWRPbmx5PSJ0cnVlIiBpc09yZGVyZWQ9InRydWUiIGlzVW5pcXVlPSJ0cnVlIiB4bWk6dHlwZT0idW1sOlByb3BlcnR5IiBhZ2dyZWdhdGlvbj0ibm9uZSIgaXNEZXJpdmVkPSJ0cnVlIiBpc0lEPSJ0cnVlIiB0eXBlPSJBQUFBQUFHRkg2ZUJIQjVMd1JzPSI+CgkJCQkJCTx4bWk6RXh0ZW5zaW9uIGV4dGVuZGVyPSJTdGFyVU1MIj4KCQkJCQkJCTxzdGVyZW90eXBlIHZhbHVlPSIiLz4KCQkJCQkJPC94bWk6RXh0ZW5zaW9uPgoJCQkJCQk8bG93ZXJWYWx1ZSB4bWk6aWQ9IkFBQUFBQUdGSUNjVi9IQlpsc1E9IiB4bWk6dHlwZT0idW1sOkxpdGVyYWxVbmxpbWl0ZWROYXR1cmFsIiB2YWx1ZT0iKiIvPgoJCQkJCQk8dXBwZXJWYWx1ZSB4bWk6aWQ9IkFBQUFBQUdGSUNjVi9IQmFTc1U9IiB4bWk6dHlwZT0idW1sOkxpdGVyYWxVbmxpbWl0ZWROYXR1cmFsIiB2YWx1ZT0iKiIvPgoJCQkJCTwvb3duZWRFbmQ+CgkJCQkJPG93bmVkRW5kIHhtaTppZD0iQUFBQUFBR0ZINm1yR3lJTlM2VT0iIHZpc2liaWxpdHk9InB1YmxpYyIgaXNTdGF0aWM9ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiBpc1JlYWRPbmx5PSJmYWxzZSIgaXNPcmRlcmVkPSJmYWxzZSIgaXNVbmlxdWU9ImZhbHNlIiB4bWk6dHlwZT0idW1sOlByb3BlcnR5IiBhZ2dyZWdhdGlvbj0ibm9uZSIgaXNEZXJpdmVkPSJmYWxzZSIgaXNJRD0iZmFsc2UiIHR5cGU9IkFBQUFBQUdGSDZlV0t4NTFHTEk9Ij4KCQkJCQkJPHhtaTpFeHRlbnNpb24gZXh0ZW5kZXI9IlN0YXJVTUwiPgoJCQkJCQkJPHN0ZXJlb3R5cGUgdmFsdWU9IiIvPgoJCQkJCQk8L3htaTpFeHRlbnNpb24+CgkJCQkJCTxsb3dlclZhbHVlIHhtaTppZD0iQUFBQUFBR0ZJQ2NWL0hCYkkxUT0iIHhtaTp0eXBlPSJ1bWw6TGl0ZXJhbEludGVnZXIiIHZhbHVlPSIxIi8+CgkJCQkJCTx1cHBlclZhbHVlIHhtaTppZD0iQUFBQUFBR0ZJQ2NWL0hCY1ZUQT0iIHhtaTp0eXBlPSJ1bWw6TGl0ZXJhbEludGVnZXIiIHZhbHVlPSIxIi8+CgkJCQkJPC9vd25lZEVuZD4KCQkJCQk8bWVtYmVyRW5kIHhtaTppZHJlZj0iQUFBQUFBR0ZINm1yR3lJTXFXcz0iLz4KCQkJCQk8bWVtYmVyRW5kIHhtaTppZHJlZj0iQUFBQUFBR0ZINm1yR3lJTlM2VT0iLz4KCQkJCTwvb3duZWRNZW1iZXI+CgkJCQk8b3duZWRNZW1iZXIgeG1pOmlkPSJBQUFBQUFHRklDQnVGMmFqbXl3PSIgdmlzaWJpbGl0eT0icHVibGljIiB4bWk6dHlwZT0idW1sOkFzc29jaWF0aW9uIiBpc0Rlcml2ZWQ9ImZhbHNlIj4KCQkJCQk8b3duZWRFbmQgeG1pOmlkPSJBQUFBQUFHRklDQnVGMmFrOWZ3PSIgdmlzaWJpbGl0eT0icHVibGljIiBpc1N0YXRpYz0iZmFsc2UiIGlzTGVhZj0iZmFsc2UiIGlzUmVhZE9ubHk9ImZhbHNlIiBpc09yZGVyZWQ9ImZhbHNlIiBpc1VuaXF1ZT0iZmFsc2UiIHhtaTp0eXBlPSJ1bWw6UHJvcGVydHkiIGFnZ3JlZ2F0aW9uPSJub25lIiBpc0Rlcml2ZWQ9ImZhbHNlIiBpc0lEPSJmYWxzZSIgdHlwZT0iQUFBQUFBR0ZINmVCSEI1THdScz0iPgoJCQkJCQk8eG1pOkV4dGVuc2lvbiBleHRlbmRlcj0iU3RhclVNTCI+CgkJCQkJCQk8c3RlcmVvdHlwZSB2YWx1ZT0iIi8+CgkJCQkJCTwveG1pOkV4dGVuc2lvbj4KCQkJCQkJPGxvd2VyVmFsdWUgeG1pOmlkPSJBQUFBQUFHRklDY1YvSEJmN2dvPSIgeG1pOnR5cGU9InVtbDpMaXRlcmFsSW50ZWdlciIgdmFsdWU9IjEiLz4KCQkJCQkJPHVwcGVyVmFsdWUgeG1pOmlkPSJBQUFBQUFHRklDY1YvSEJnM21JPSIgeG1pOnR5cGU9InVtbDpMaXRlcmFsSW50ZWdlciIgdmFsdWU9IjEiLz4KCQkJCQk8L293bmVkRW5kPgoJCQkJCTxvd25lZEVuZCB4bWk6aWQ9IkFBQUFBQUdGSUNCdUYyYWx6RzQ9IiB2aXNpYmlsaXR5PSJwdWJsaWMiIGlzU3RhdGljPSJmYWxzZSIgaXNMZWFmPSJmYWxzZSIgaXNSZWFkT25seT0iZmFsc2UiIGlzT3JkZXJlZD0iZmFsc2UiIGlzVW5pcXVlPSJmYWxzZSIgeG1pOnR5cGU9InVtbDpQcm9wZXJ0eSIgYWdncmVnYXRpb249Im5vbmUiIGlzRGVyaXZlZD0iZmFsc2UiIGlzSUQ9ImZhbHNlIiB0eXBlPSJBQUFBQUFHRklDQnVCR1pyTWJvPSI+CgkJCQkJCTx4bWk6RXh0ZW5zaW9uIGV4dGVuZGVyPSJTdGFyVU1MIj4KCQkJCQkJCTxzdGVyZW90eXBlIHZhbHVlPSIiLz4KCQkJCQkJPC94bWk6RXh0ZW5zaW9uPgoJCQkJCQk8bG93ZXJWYWx1ZSB4bWk6aWQ9IkFBQUFBQUdGSUNjVi9IQmhsRVE9IiB4bWk6dHlwZT0idW1sOkxpdGVyYWxVbmxpbWl0ZWROYXR1cmFsIiB2YWx1ZT0iKiIvPgoJCQkJCQk8dXBwZXJWYWx1ZSB4bWk6aWQ9IkFBQUFBQUdGSUNjVi9IQmlCTVk9IiB4bWk6dHlwZT0idW1sOkxpdGVyYWxVbmxpbWl0ZWROYXR1cmFsIiB2YWx1ZT0iKiIvPgoJCQkJCTwvb3duZWRFbmQ+CgkJCQkJPG1lbWJlckVuZCB4bWk6aWRyZWY9IkFBQUFBQUdGSUNCdUYyYWs5Znc9Ii8+CgkJCQkJPG1lbWJlckVuZCB4bWk6aWRyZWY9IkFBQUFBQUdGSUNCdUYyYWx6RzQ9Ii8+CgkJCQk8L293bmVkTWVtYmVyPgoJCQkJPG93bmVkQXR0cmlidXRlIHhtaTppZD0iQUFBQUFBR0ZINmdQS3g2bnFOQT0iIG5hbWU9Im5hbWUiIHZpc2liaWxpdHk9InByaXZhdGUiIGlzU3RhdGljPSJmYWxzZSIgaXNMZWFmPSJmYWxzZSIgdHlwZT0iU3RyaW5nX2lkIiBpc1JlYWRPbmx5PSJmYWxzZSIgaXNPcmRlcmVkPSJmYWxzZSIgaXNVbmlxdWU9ImZhbHNlIiB4bWk6dHlwZT0idW1sOlByb3BlcnR5IiBhZ2dyZWdhdGlvbj0ibm9uZSIgaXNEZXJpdmVkPSJmYWxzZSIgaXNJRD0iZmFsc2UiLz4KCQkJCTxvd25lZEF0dHJpYnV0ZSB4bWk6aWQ9IkFBQUFBQUdGSDYwdUtpVTNqMWM9IiBuYW1lPSJhbHRlciIgdmlzaWJpbGl0eT0icHJpdmF0ZSIgaXNTdGF0aWM9ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiB0eXBlPSJpbnRfaWQiIGlzUmVhZE9ubHk9ImZhbHNlIiBpc09yZGVyZWQ9ImZhbHNlIiBpc1VuaXF1ZT0iZmFsc2UiIHhtaTp0eXBlPSJ1bWw6UHJvcGVydHkiIGFnZ3JlZ2F0aW9uPSJub25lIiBpc0Rlcml2ZWQ9ImZhbHNlIiBpc0lEPSJmYWxzZSIvPgoJCQkJPG93bmVkQXR0cmlidXRlIHhtaTppZD0iQUFBQUFBR0ZJQnpRM0dVeFgvcz0iIG5hbWU9Im1hY2h0ZmFrdG9yIiB2aXNpYmlsaXR5PSJwcml2YXRlIiBpc1N0YXRpYz0iZmFsc2UiIGlzTGVhZj0iZmFsc2UiIHR5cGU9ImludF9pZCIgaXNSZWFkT25seT0iZmFsc2UiIGlzT3JkZXJlZD0iZmFsc2UiIGlzVW5pcXVlPSJmYWxzZSIgeG1pOnR5cGU9InVtbDpQcm9wZXJ0eSIgYWdncmVnYXRpb249Im5vbmUiIGlzRGVyaXZlZD0iZmFsc2UiIGlzSUQ9ImZhbHNlIi8+CgkJCTwvcGFja2FnZWRFbGVtZW50PgoJCQk8cGFja2FnZWRFbGVtZW50IHhtaTppZD0iQUFBQUFBR0ZINmVXS3g1MUdMST0iIG5hbWU9IlN0YW1tIiB2aXNpYmlsaXR5PSJwdWJsaWMiIGlzQWJzdHJhY3Q9ImZhbHNlIiBpc0ZpbmFsU3BlY2lhbGl6YXRpb249ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiB4bWk6dHlwZT0idW1sOkNsYXNzIiBpc0FjdGl2ZT0iZmFsc2UiPgoJCQkJPG93bmVkQXR0cmlidXRlIHhtaTppZD0iQUFBQUFBR0ZINmZaVXg2Zm9jMD0iIG5hbWU9Im5hbWUiIHZpc2liaWxpdHk9InByaXZhdGUiIGlzU3RhdGljPSJmYWxzZSIgaXNMZWFmPSJmYWxzZSIgdHlwZT0iU3RyaW5nX2lkIiBpc1JlYWRPbmx5PSJmYWxzZSIgaXNPcmRlcmVkPSJmYWxzZSIgaXNVbmlxdWU9ImZhbHNlIiB4bWk6dHlwZT0idW1sOlByb3BlcnR5IiBhZ2dyZWdhdGlvbj0ibm9uZSIgaXNEZXJpdmVkPSJmYWxzZSIgaXNJRD0iZmFsc2UiLz4KCQkJCTxvd25lZEF0dHJpYnV0ZSB4bWk6aWQ9IkFBQUFBQUdGSDYxdkVpWEl4N1E9IiBuYW1lPSJncnVlbmR1bmciIHZpc2liaWxpdHk9InByaXZhdGUiIGlzU3RhdGljPSJmYWxzZSIgaXNMZWFmPSJmYWxzZSIgdHlwZT0iaW50X2lkIiBpc1JlYWRPbmx5PSJmYWxzZSIgaXNPcmRlcmVkPSJmYWxzZSIgaXNVbmlxdWU9ImZhbHNlIiB4bWk6dHlwZT0idW1sOlByb3BlcnR5IiBhZ2dyZWdhdGlvbj0ibm9uZSIgaXNEZXJpdmVkPSJmYWxzZSIgaXNJRD0iZmFsc2UiLz4KCQkJPC9wYWNrYWdlZEVsZW1lbnQ+CgkJCTxwYWNrYWdlZEVsZW1lbnQgeG1pOmlkPSJBQUFBQUFHRkg2aHZteDZ2Y0tFPSIgbmFtZT0iQ2xhc3MxIiB2aXNpYmlsaXR5PSJwdWJsaWMiIGlzQWJzdHJhY3Q9ImZhbHNlIiBpc0ZpbmFsU3BlY2lhbGl6YXRpb249ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiB4bWk6dHlwZT0idW1sOkNsYXNzIiBpc0FjdGl2ZT0iZmFsc2UiLz4KCQkJPHBhY2thZ2VkRWxlbWVudCB4bWk6aWQ9IkFBQUFBQUdGSUNCdUJHWnJNYm89IiBuYW1lPSJNYWdpc2NoZXJHZWdlbnN0YW5kIiB2aXNpYmlsaXR5PSJwdWJsaWMiIGlzQWJzdHJhY3Q9ImZhbHNlIiBpc0ZpbmFsU3BlY2lhbGl6YXRpb249ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiB4bWk6dHlwZT0idW1sOkNsYXNzIiBpc0FjdGl2ZT0iZmFsc2UiPgoJCQkJPG93bmVkQXR0cmlidXRlIHhtaTppZD0iQUFBQUFBR0ZJQ0NqVkdkb2M5cz0iIG5hbWU9InR5cCIgdmlzaWJpbGl0eT0icHJpdmF0ZSIgaXNTdGF0aWM9ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiB0eXBlPSJTdHJpbmdfaWQiIGlzUmVhZE9ubHk9ImZhbHNlIiBpc09yZGVyZWQ9ImZhbHNlIiBpc1VuaXF1ZT0iZmFsc2UiIHhtaTp0eXBlPSJ1bWw6UHJvcGVydHkiIGFnZ3JlZ2F0aW9uPSJub25lIiBpc0Rlcml2ZWQ9ImZhbHNlIiBpc0lEPSJmYWxzZSIvPgoJCQkJPG93bmVkQXR0cmlidXRlIHhtaTppZD0iQUFBQUFBR0ZJQ0RJcEdoK3BwUT0iIG5hbWU9ImZha3RvciIgdmlzaWJpbGl0eT0icHJpdmF0ZSIgaXNTdGF0aWM9ImZhbHNlIiBpc0xlYWY9ImZhbHNlIiB0eXBlPSJpbnRfaWQiIGlzUmVhZE9ubHk9ImZhbHNlIiBpc09yZGVyZWQ9ImZhbHNlIiBpc1VuaXF1ZT0iZmFsc2UiIHhtaTp0eXBlPSJ1bWw6UHJvcGVydHkiIGFnZ3JlZ2F0aW9uPSJub25lIiBpc0Rlcml2ZWQ9ImZhbHNlIiBpc0lEPSJmYWxzZSIvPgoJCQk8L3BhY2thZ2VkRWxlbWVudD4KCQk8L3BhY2thZ2VkRWxlbWVudD4KCQk8cGFja2FnZWRFbGVtZW50IHhtaTppZD0iU3RyaW5nX2lkIiB4bWk6dHlwZT0idW1sOkRhdGFUeXBlIiBuYW1lPSJTdHJpbmciLz4KCQk8cGFja2FnZWRFbGVtZW50IHhtaTppZD0iaW50X2lkIiB4bWk6dHlwZT0idW1sOkRhdGFUeXBlIiBuYW1lPSJpbnQiLz4KCTwvdW1sOk1vZGVsPgo8L3htaTpYTUk+</file>
+    </answerfiles>
+  </question>
+
+</quiz>

@@ -1,0 +1,20 @@
+import os
+
+files = [fname for fname in os.listdir() if fname.endswith('.py')]
+if len(files) == 1:
+	import diagramLib as dL
+else:
+    raise Exception("No diagramLib.py support file found!")
+
+__student_answer__ = """{{ STUDENT_ANSWER | e('py') }}"""
+
+dL.load_file("{{ ATTACHMENTS | e('py') }}")
+
+SEPARATOR = "#<ab@17943918#@>#"
+
+{% for TEST in TESTCASES %}
+{{ TEST.testcode }}
+{% if not loop.last %}
+print(SEPARATOR)
+{% endif %}
+{% endfor %}
