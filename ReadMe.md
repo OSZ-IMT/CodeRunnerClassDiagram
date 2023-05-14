@@ -1,4 +1,6 @@
 # CodeRunner Classdiagram Question Type for StarUML
-See the two test
+Import xml and see the two test
+
+New version, check .mdj File
 
 Details follow

@@ -1,6 +1,6 @@
 import diagramLib as dL
 
-dL.load_file('test/schiff/schiff.xmi')
+dL.load_file('schiff.xmi')
 
 # tests
 dL.exist_class("Stamm")
