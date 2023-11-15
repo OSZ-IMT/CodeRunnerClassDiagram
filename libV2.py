@@ -1,4 +1,4 @@
-# Version 2
+# Version 2 - 231115
 
 import json
 from types import SimpleNamespace
@@ -14,10 +14,14 @@ def load_file(name):
     :param name: file name
     :return: opened file as simpleobject map
     """
-    global file
-    data = Path(name).read_text()
-    file = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
-    return file
+    try:
+        global file
+        data = Path(name).read_text()
+        file = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
+        return file
+    except:
+        print("StarUML Klassendiagramm " + name + " nicht gefunden")
+        raise Exception("StarUML Klassendiagramm " + name + " nicht gefunden")
 
 
 def get_diagram_class(name):
@@ -101,16 +105,58 @@ def get_diagram_association(c1name, c2name):
     return False
 
 
-def exist_class(name):
+def get_diagram_inheritance(c1name, c2name):
+    id1 = get_diagram_class_id(c1name)
+    id1_found = False
+    id2 = get_diagram_class_id(c2name)
+    id2_found = False
+
+    # exist?
+    if id1 is False or id2 is False:
+        return False
+
+    # run over all ass and search a match
+    for c in file.ownedElements[0].ownedElements:
+        if not hasattr(c, 'ownedElements'):
+            continue
+
+        for a in c.ownedElements:
+            if a._type != 'UMLGeneralization':
+                continue
+
+            if a._parent.__dict__['$ref'] == id1:
+                id1_found = True
+
+            if a.source.__dict__['$ref'] == id2:
+                id2_found = True
+
+            # found?
+            if id1_found and id2_found:
+                return a
+
+            # reset
+            id1_found = False
+            id2_found = False
+
+    return False
+
+
+def exist_class(name, stereotype=None):
     """
     Check if class exist and print a message
     :param name: name of class
+    :param stereotype: special stereotype exist, e.g. abstract
     :return: None
     """
-    print("Klasse",name,"existiert", end="")
-    if not get_diagram_class(name):
+    print("Klasse", name, "existiert", end="")
+    cls = get_diagram_class(name)
+    if not cls:
         print(" nicht!")
     else:
+        if stereotype is not None:
+            print(" mit Stereotype", stereotype, end="")
+            if cls.stereotype != stereotype:
+                print(" nicht", end="")
         print(".")
 
 
@@ -130,13 +176,13 @@ def exist_attribute(cname, name, data=None, visibility=None):
         return
 
     if visibility is not None and not att.visibility == visDict[visibility]:
-        print(" mit falscher Sichtbarkeit!")
+        print(" mit falscher Sichtbarkeit!", end="")
 
     if data is None:
         print(".")
         return
 
-    print(" mit Datentyp",data, end="")
+    print(" mit Datentyp", data, end="")
     if att.type.lower() == data.lower():
         print(".")
     else:
@@ -175,7 +221,7 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
     if parameter_out is not None:
         print(" mit Return", parameter_out, end="")
         for p in att.parameters:
-            if hasattr(p,'direction') and p.direction == "return" and p.type.lower() == parameter_out.lower():
+            if hasattr(p, 'direction') and p.direction == "return" and p.type.lower() == parameter_out.lower():
                 parameter_out_found = True
     else:
         parameter_out_found = True
@@ -187,7 +233,7 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
 
 
 def exist_association(c1name, c2name, c1multi=None, c2multi=None):
-    print("Beziehung zwischen",c1name,"und",c2name,"existiert", end="")
+    print("Beziehung zwischen", c1name, "und", c2name, "existiert", end="")
     ass = get_diagram_association(c1name, c2name)
     if c1multi is None:
         if not ass:
@@ -195,7 +241,7 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None):
         else:
             print(".")
     else:
-        print(" mit Multiplizität",c1multi,"und",c2multi, end="")
+        print(" mit Multiplizität", c1multi, "und", c2multi, end="")
 
         if not ass:
             print(" nicht!")
@@ -219,3 +265,15 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None):
             print(".")
         else:
             print(" nicht!")
+
+
+def exist_inheritance(c1name, c2name):
+    print("Vererbung zwischen", c1name, "und", c2name, "existiert", end="")
+    ass = get_diagram_inheritance(c1name, c2name)
+
+    if not ass:
+        print(" nicht!")
+    else:
+        print(".")
+
+

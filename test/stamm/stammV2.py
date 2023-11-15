@@ -1,6 +1,6 @@
 import libV2 as lib
 
-file = lib.load_file('stamm.mdj')
+file = lib.load_file('stamm2.mdj')
 
 # tests
 lib.exist_class("Stamm")
