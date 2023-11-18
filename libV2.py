@@ -110,24 +110,31 @@ def get_diagram_association(c1name, c2name):
 
 
 def get_diagram_inheritance(parent_name, child_name):
-    parent_id = get_diagram_class_id(parent_name)
-    id1_found = False
+    parent = get_diagram_class(parent_name)
     child = get_diagram_class(child_name)
-    child_id = get_diagram_class_id(child_name)
-    id2_found = False
 
     # exist?
-    if parent_id is False or child_id is False:
+    if parent is False or child is False:
         return False
 
+    # run over all child ass and search a match
+    if hasattr(child,'ownedElements'):
+        for a in child.ownedElements:
+            if a._type != 'UMLGeneralization':
+                continue
 
-    # run over all ass and search a match
-    for a in child.ownedElements:
-        if a._type != 'UMLGeneralization':
-            continue
+            if a.target.__dict__['$ref'] == parent._id:
+                return True
 
-        if a.target.__dict__['$ref'] == parent_id:
-            return True
+
+    # run over all parent ass and search a match
+    if hasattr(parent,'ownedElements'):
+        for a in parent.ownedElements:
+            if a._type != 'UMLGeneralization':
+                continue
+
+            if a.source.__dict__['$ref'] == child._id:
+                return a
 
     return False
 
@@ -139,7 +146,7 @@ def exist_class(name, abstract=False):
     :param abstract: special stereotype exist
     :return: None
     """
-    print("Klasse", name, "existiert", end="")
+    print("Klasse", name, "ist", end="")
     cls = get_diagram_class(name)
     if not cls:
         print(" nicht!")
@@ -166,7 +173,7 @@ def exist_attribute(cname, name, data=None, visibility=None):
     :param visibility: (Optional) datatype of attribute: +,#,-
     :return: None
     """
-    print("In Klasse", cname, "existiert Attribut", name, end="")
+    print("In Klasse", cname, "ist Attribut", name, end="")
     att = get_diagram_attribute(cname, name)
     if not att:
         print(" nicht!")
@@ -195,7 +202,7 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
     :param parameter_out: (optional) datatype of return value
     :return: None
     """
-    print("In Klasse", cname, "existiert Methode", name, end="")
+    print("In Klasse", cname, "ist Methode", name, end="")
     att = get_diagram_method(cname, name)
     if not att:
         print(" nicht!")
@@ -230,7 +237,7 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
 
 
 def exist_association(c1name, c2name, c1multi=None, c2multi=None):
-    print("Beziehung zwischen", c1name, "und", c2name, "existiert", end="")
+    print("Beziehung zwischen", c1name, "und", c2name, "ist", end="")
     ass = get_diagram_association(c1name, c2name)
     if c1multi is None:
         if not ass:
@@ -265,7 +272,7 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None):
 
 
 def exist_inheritance(c1name, c2name):
-    print("Vererbung zwischen", c1name, "und", c2name, "existiert", end="")
+    print("Vererbung zwischen", c1name, "und", c2name, "ist", end="")
     ass = get_diagram_inheritance(c1name, c2name)
 
     if not ass:

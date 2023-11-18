@@ -25,9 +25,8 @@ exist_attribute("Customer", "status", "char", "#")
 exist_attribute("Customer", "paymentType", "char", "#")
 
 exist_inheritance("Customer", "Consumer")
-exist_attribute("Consumer", "numberOfOrder", "int", "-")
 exist_attribute("Consumer", "birthday")
 
 exist_inheritance("Customer", "Company")
 exist_attribute("Company", "name", "String", "-")
-exist_attribute("Company", "contract", "String", "-")
+exist_attribute("Company", "contact", "String", "-")
