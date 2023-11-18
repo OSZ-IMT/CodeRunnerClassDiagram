@@ -8,6 +8,10 @@ file = None
 visDict = {'-': 'private', '+': 'public', '#': 'protected'}
 
 
+def version():
+    print("231118")
+
+
 def load_file(name):
     """
     Parse mdj JSON into an object with attributes corresponding to dict keys.
@@ -105,59 +109,52 @@ def get_diagram_association(c1name, c2name):
     return False
 
 
-def get_diagram_inheritance(c1name, c2name):
-    id1 = get_diagram_class_id(c1name)
+def get_diagram_inheritance(parent_name, child_name):
+    parent_id = get_diagram_class_id(parent_name)
     id1_found = False
-    id2 = get_diagram_class_id(c2name)
+    child = get_diagram_class(child_name)
+    child_id = get_diagram_class_id(child_name)
     id2_found = False
 
     # exist?
-    if id1 is False or id2 is False:
+    if parent_id is False or child_id is False:
         return False
 
+
     # run over all ass and search a match
-    for c in file.ownedElements[0].ownedElements:
-        if not hasattr(c, 'ownedElements'):
+    for a in child.ownedElements:
+        if a._type != 'UMLGeneralization':
             continue
 
-        for a in c.ownedElements:
-            if a._type != 'UMLGeneralization':
-                continue
-
-            if a._parent.__dict__['$ref'] == id1:
-                id1_found = True
-
-            if a.source.__dict__['$ref'] == id2:
-                id2_found = True
-
-            # found?
-            if id1_found and id2_found:
-                return a
-
-            # reset
-            id1_found = False
-            id2_found = False
+        if a.target.__dict__['$ref'] == parent_id:
+            return True
 
     return False
 
 
-def exist_class(name, stereotype=None):
+def exist_class(name, abstract=False):
     """
     Check if class exist and print a message
     :param name: name of class
-    :param stereotype: special stereotype exist, e.g. abstract
+    :param abstract: special stereotype exist
     :return: None
     """
     print("Klasse", name, "existiert", end="")
     cls = get_diagram_class(name)
     if not cls:
         print(" nicht!")
-    else:
-        if stereotype is not None:
-            print(" mit Stereotype", stereotype, end="")
-            if cls.stereotype != stereotype:
-                print(" nicht", end="")
+        return
+
+    if abstract is False:
         print(".")
+        return
+
+    print(" abstract", end="")
+
+    if ('isAbstract' in cls.__dict__ and cls.isAbstract is True) or ('stereotype' in cls.__dict__ and cls.stereotype == 'abstract'):
+        print(".")
+    else:
+        print(" nicht!")
 
 
 def exist_attribute(cname, name, data=None, visibility=None):

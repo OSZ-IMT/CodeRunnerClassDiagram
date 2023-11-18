@@ -3,8 +3,11 @@ from libV2 import exist_class
 from libV2 import exist_attribute
 from libV2 import exist_association
 from libV2 import exist_inheritance
+from libV2 import version
 
-file = load_file('hase.mdj')
+version()
+
+file = load_file('hase2.mdj')
 
 # tests
 exist_class("Person")
