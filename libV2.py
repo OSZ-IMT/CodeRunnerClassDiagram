@@ -7,9 +7,52 @@ from pathlib import Path
 file = None
 visDict = {'-': 'private', '+': 'public', '#': 'protected'}
 
+lang = {
+    'de': {
+        'file_missing': 'StarUML Klassendiagramm "{arg0}" nicht gefunden.',
+        'class.exist.double': '!Klasse {arg0} existiert doppelt im Modell.',
+        'class.exist': 'Klasse {arg0} ist.',
+        'class.exist.no': 'Klasse {arg0} ist nicht!',
+        'class.exist.abstract': 'Klasse {arg0} ist abstract.',
+        'class.exist.abstract.no': 'Klasse {arg0} ist abstract nicht!',
+        'association.exist': 'Beziehung zwischen {arg0} und {arg1} ist.',
+        'association.exist.no': 'Beziehung zwischen {arg0} und {arg1} ist nicht!'
+    }
+}
+lang_default = 'de'
 
 def version():
-    print("231118")
+    print("231206")
+
+
+def _(txt, arg0=None, arg1=None):
+    """
+    Translate a text
+    :param txt:
+    :param arg0:
+    :return:
+    """
+    if txt in lang[lang_default]:
+        key = lang[lang_default][txt]
+    else:
+        key = '!!!'+txt
+
+    if arg0 is None:
+        return key
+    return key.format(arg0=arg0, arg1=arg1)
+
+
+def _t(txt, yes, arg0=None, arg1=None):
+    """
+    Translate a text
+    :param txt:
+    :param yes: true: use this txt, false: add .no to show the wrong text.
+    :param arg0:
+    :return:
+    """
+    if (yes):
+        return _(txt, arg0, arg1)
+    return _(txt+".no", arg0, arg1)
 
 
 def load_file(name):
@@ -24,8 +67,8 @@ def load_file(name):
         file = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
         return file
     except:
-        print("StarUML Klassendiagramm " + name + " nicht gefunden")
-        raise Exception("StarUML Klassendiagramm " + name + " nicht gefunden")
+        print(_('file_missing', name))
+        raise Exception(_('file_missing', name))
 
 
 def get_diagram_class(name):
@@ -38,6 +81,30 @@ def get_diagram_class(name):
         if e._type == "UMLClass" and e.name.lower() == name.lower():
             return e
     return False
+
+
+def count_diagram_class(name):
+    """
+    Count a diagram class, to check if exist double
+    :param name: name of the class
+    :return: Number of classes found
+    """
+    count = 0
+    for e in file.ownedElements[0].ownedElements:
+        if e._type == "UMLClass" and e.name.lower() == name.lower():
+            count += 1
+    return count
+
+
+def list_diagram_class():
+    """
+    List all found classes
+    :param name: name of the class
+    :return: Number of classes found
+    """
+    for e in file.ownedElements[0].ownedElements:
+        if e._type == "UMLClass":
+            print(e.name)
 
 
 # Return a diagram class, if exist
@@ -146,22 +213,23 @@ def exist_class(name, abstract=False):
     :param abstract: special stereotype exist
     :return: None
     """
-    print("Klasse", name, "ist", end="")
     cls = get_diagram_class(name)
     if not cls:
-        print(" nicht!")
+        print(_t('class.exist', False, name))
+        return
+
+    # exist double?
+    if count_diagram_class(name) > 1:
+        print(_('class.exist.double', name))
         return
 
     if abstract is False:
-        print(".")
+        print(_t('class.exist', True, name))
         return
 
-    print(" abstract", end="")
-
-    if ('isAbstract' in cls.__dict__ and cls.isAbstract is True) or ('stereotype' in cls.__dict__ and cls.stereotype == 'abstract'):
-        print(".")
-    else:
-        print(" nicht!")
+    # check Abstract
+    erg = ('isAbstract' in cls.__dict__ and cls.isAbstract is True) or ('stereotype' in cls.__dict__ and cls.stereotype == 'abstract')
+    print(_t('class.exist.abstract', erg, name))
 
 
 def exist_attribute(cname, name, data=None, visibility=None):
@@ -237,38 +305,37 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
 
 
 def exist_association(c1name, c2name, c1multi=None, c2multi=None):
-    print("Beziehung zwischen", c1name, "und", c2name, "ist", end="")
     ass = get_diagram_association(c1name, c2name)
     if c1multi is None:
-        if not ass:
-            print(" nicht!")
-        else:
-            print(".")
+        print(_t('association.exist',ass,c1name,c2name))
+        return
+
+    print("Beziehung zwischen", c1name, "und", c2name, "ist", end="")
+    print(" mit Multiplizität", c1multi, "und", c2multi, end="")
+
+    if not ass:
+        print(" nicht!")
+        return
+
+    id1 = get_diagram_class_id(c1name)
+    id1_found = False
+    id2 = get_diagram_class_id(c2name)
+    id2_found = False
+
+    # need to check both ends
+    if id1_found is False and ass.end1.reference.__dict__['$ref'] == id1 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c1multi:
+        id1_found = True
+    if id1_found is False and ass.end2.reference.__dict__['$ref'] == id1 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c1multi:
+        id1_found = True
+    if id2_found is False and ass.end1.reference.__dict__['$ref'] == id2 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c2multi:
+        id2_found = True
+    if id2_found is False and ass.end2.reference.__dict__['$ref'] == id2 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c2multi:
+        id2_found = True
+
+    if id1_found and id2_found:
+        print(".")
     else:
-        print(" mit Multiplizität", c1multi, "und", c2multi, end="")
-
-        if not ass:
-            print(" nicht!")
-
-        id1 = get_diagram_class_id(c1name)
-        id1_found = False
-        id2 = get_diagram_class_id(c2name)
-        id2_found = False
-
-        # need to check both ends
-        if id1_found is False and ass.end1.reference.__dict__['$ref'] == id1 and ass.end1.multiplicity == c1multi:
-            id1_found = True
-        if id1_found is False and ass.end2.reference.__dict__['$ref'] == id1 and ass.end2.multiplicity == c1multi:
-            id1_found = True
-        if id2_found is False and ass.end1.reference.__dict__['$ref'] == id2 and ass.end1.multiplicity == c2multi:
-            id2_found = True
-        if id2_found is False and ass.end2.reference.__dict__['$ref'] == id2 and ass.end2.multiplicity == c2multi:
-            id2_found = True
-
-        if id1_found and id2_found:
-            print(".")
-        else:
-            print(" nicht!")
+        print(" nicht!")
 
 
 def exist_inheritance(c1name, c2name):
