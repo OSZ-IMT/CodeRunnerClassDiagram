@@ -1,4 +1,4 @@
-# Version 2 - 231115
+# Version 2 - 231216
 
 import json
 from types import SimpleNamespace
@@ -6,26 +6,95 @@ from pathlib import Path
 
 file = None
 visDict = {'-': 'private', '+': 'public', '#': 'protected'}
+ignore_case = True
+alternative_dir = {}
 
 lang = {
     'de': {
         'file_missing': 'StarUML Klassendiagramm "{arg0}" nicht gefunden.',
-        'class.exist.double': '!Klasse {arg0} existiert doppelt im Modell.',
         'class.exist': 'Klasse {arg0} ist.',
+        'class.double': '!Klasse {arg0} existiert {arg1}x im Modell.',
+        'class.stereotype': '!Klasse {arg0} hat unbekannten Stereotype {arg1}.',
         'class.exist.no': 'Klasse {arg0} ist nicht!',
         'class.exist.abstract': 'Klasse {arg0} ist abstract.',
         'class.exist.abstract.no': 'Klasse {arg0} ist abstract nicht!',
-        'association.exist': 'Beziehung zwischen {arg0} und {arg1} ist.',
-        'association.exist.no': 'Beziehung zwischen {arg0} und {arg1} ist nicht!'
+        'attribute': 'In Klasse {arg0} ist Attribut {arg1}.',
+        'attribute.double': '!Attribut {arg0}.{arg1} existiert {arg2}x im Modell.',
+        'attribute.no': 'In Klasse {arg0} ist Attribut {arg1} nicht!',
+        'attribute.visibility.no': 'In Klasse {arg0} ist Attribut {arg1} mit falscher Sichtbarkeit.',
+        'attribute.data': 'In Klasse {arg0} ist Attribut {arg1} mit Datentyp {arg2}.',
+        'attribute.data.no': '!Attribut {arg0}.{arg1}: {arg2} exisitiert nicht',
+        'association': 'Beziehung zwischen {arg0} und {arg1} ist.',
+        'association.no': 'Beziehung zwischen {arg0} und {arg1} ist nicht!',
+        'association.double': '!Assoziation zwischen {arg0}-{arg1} existiert {arg2}x im Modell.',
+        'association.multiplicity': 'Beziehung zwischen {arg0} und {arg1} ist mit Multiplizität {arg2} und {arg3}.',
+        'association.multiplicity.no': '!Assoziation {arg2}x {arg0} zu {arg3}x {arg1} existiert nicht',
+        'inheritance': 'Vererbung zwischen {arg0} und {arg1} ist nicht.',
+        'inheritance.no': '!Vererbung zwischen {arg0} und {arg1} existiert nicht.',
+        'inheritance.double': '!Vererbung zwischen {arg0} und {arg1} {arg2}x im Modell.',
+        'method': 'In Klasse {arg0} ist Methode {arg1}.',
+        'method.no': '!Methode {arg0}.{arg1}() existiert nicht.',
+        'method.double': '!Methode {arg0}.{arg1}() existiert {arg2}x im Modell.',
+        'method.parameter.in': 'Methode {arg0}.{arg1}({arg2}) existiert.',
+        'method.parameter.in.no': '!Methode {arg0}.{arg1}({arg2}) existiert nicht.',
+        'method.parameter.out': 'Methode {arg0}.{arg1}(): {arg2} existiert.',
+        'method.parameter.out.no': '!Methode {arg0}.{arg1}(): {arg2} existiert nicht.',
+        'method.parameter.inout': 'Methode {arg0}.{arg1}({arg2}): {arg3} existiert.',
+        'method.parameter.inout.no': '!Methode {arg0}.{arg1}({arg2}): {arg3} existiert nicht.',
     }
 }
 lang_default = 'de'
 
+
 def version():
-    print("231206")
+    print("231215")
 
 
-def _(txt, arg0=None, arg1=None):
+def lower(a, b):
+    global ignore_case
+
+    # convert to list
+    if not type(a) is list:
+        a = [a]
+    if not type(b) is list:
+        b = [b]
+
+    # convert case?
+    if ignore_case:
+        for i in range(0,len(a)):
+            a[i] = a[i].lower()
+
+        for i in range(0,len(b)):
+            b[i] = b[i].lower()
+
+    # add replaces
+    for i in range(0, len(a)):
+        if a[i] in alternative_dir:
+            a = alternative_dir[a[i]] + a
+
+    for i in range(0, len(b)):
+        if b[i] in alternative_dir:
+            b = alternative_dir[b[i]] + b
+
+    for ai in a:
+        for bi in b:
+            if ai == bi:
+                return True
+
+    return False
+
+
+def alternative(base, replace):
+    """
+    Replace base with replace, e.g. for attribute name, class name, and method
+    :param base:
+    :param replace: alternative
+    :return:
+    """
+    alternative_dir[base] = replace
+
+
+def _(txt, arg0=None, arg1=None, arg2=None, arg3=None):
     """
     Translate a text
     :param txt:
@@ -35,14 +104,14 @@ def _(txt, arg0=None, arg1=None):
     if txt in lang[lang_default]:
         key = lang[lang_default][txt]
     else:
-        key = '!!!'+txt
+        key = '!!!' + txt
 
     if arg0 is None:
         return key
-    return key.format(arg0=arg0, arg1=arg1)
+    return key.format(arg0=arg0, arg1=arg1, arg2=arg2, arg3=arg3)
 
 
-def _t(txt, yes, arg0=None, arg1=None):
+def _t(txt, yes, arg0=None, arg1=None, arg2=None, arg3=None):
     """
     Translate a text
     :param txt:
@@ -51,8 +120,8 @@ def _t(txt, yes, arg0=None, arg1=None):
     :return:
     """
     if (yes):
-        return _(txt, arg0, arg1)
-    return _(txt+".no", arg0, arg1)
+        return _(txt, arg0, arg1, arg2, arg3)
+    return _(txt + ".no", arg0, arg1, arg2, arg3)
 
 
 def load_file(name):
@@ -71,29 +140,31 @@ def load_file(name):
         raise Exception(_('file_missing', name))
 
 
-def get_diagram_class(name):
+def get_diagram_class(name, print_basic_error=False):
     """
-    Return a diagram class, if exist
+    Return the list of diagram class, with this name
+    :param print_basic_error: print error message if
     :param name: name of the class
-    :return: False, if not found or class data
+    :return: list with classes or empty list
     """
-    for e in file.ownedElements[0].ownedElements:
-        if e._type == "UMLClass" and e.name.lower() == name.lower():
-            return e
-    return False
+    founds = []
 
-
-def count_diagram_class(name):
-    """
-    Count a diagram class, to check if exist double
-    :param name: name of the class
-    :return: Number of classes found
-    """
-    count = 0
     for e in file.ownedElements[0].ownedElements:
-        if e._type == "UMLClass" and e.name.lower() == name.lower():
-            count += 1
-    return count
+        if e._type == "UMLClass":
+            if lower(e.name, name):
+                founds.append(e)
+
+    if print_basic_error:
+        if len(founds) != 1:
+            print(_('class.double', name, len(founds)))
+
+        if len(founds) == 1 and 'stereotype' in founds[0].__dict__:
+            st = founds[0].stereotype
+            if st != 'abstract' and st != 'interface':
+                print(_('class.stereotype', name, st))
+                return []
+
+    return founds
 
 
 def list_diagram_class():
@@ -110,41 +181,73 @@ def list_diagram_class():
 # Return a diagram class, if exist
 def get_diagram_class_id(name):
     c = get_diagram_class(name)
-    if c is False:
+    if len(c) != 1:
         return False
-    return c._id
+    return c[0]._id
 
 
-def get_diagram_attribute(cname, name):
-    cl = get_diagram_class(cname)
-    if not cl:
-        return False
+def get_diagram_attribute(cname, name, print_basic_error=False):
+    """
+    Get Attribute of specified class
+    :param cname: Name of class
+    :param name: name of the attribute
+    :param print_basic_error: print error message if
+    :return:
+    """
+    founds = []
+
+    cl = get_diagram_class(cname, print_basic_error)
+    if len(cl) != 1:
+        return founds
+
+    cl = cl[0]
     for e in cl.attributes:
-        if e._type == "UMLAttribute" and e.name.lower() == name.lower():
-            return e
-    return False
+        if e._type == "UMLAttribute":
+            if lower(e.name, name):
+                founds.append(e)
+
+    if print_basic_error and len(founds) != 1:
+        print(_('attribute.double', cname, name, len(founds)))
+
+    return founds
 
 
-def get_diagram_method(cname, name):
-    cl = get_diagram_class(cname)
-    if not cl:
-        return False
+def get_diagram_method(cname, name, print_basic_error=False):
+    cl = get_diagram_class(cname, print_basic_error)
+    found = []
+    if len(cl) != 1:
+        return found
+    cl = cl[0]
+
+    if not 'operations' in cl.__dict__:
+        if print_basic_error:
+            print(_t('method', False, cname, name))
+        return found
 
     for e in cl.operations:
-        if e._type == "UMLOperation" and e.name.lower() == name.lower():
-            return e
-    return False
+        if e._type == "UMLOperation" and lower(e.name, name):
+            found.append(e)
+
+    if print_basic_error and len(found) != 1:
+        print(_('method.double', cname, name, len(found)))
+
+    return found
 
 
-def get_diagram_association(c1name, c2name):
-    id1 = get_diagram_class_id(c1name)
+def get_diagram_association(c1name, c2name, print_basic_error=False):
+    founds = []
+
+    c1 = get_diagram_class(c1name, print_basic_error)
+    if len(c1) != 1:
+        return founds
+    id1 = c1[0]._id
     id1_found = False
-    id2 = get_diagram_class_id(c2name)
-    id2_found = False
 
-    # exist?
-    if id1 is False or id2 is False:
-        return False
+    c2 = get_diagram_class(c2name, print_basic_error)
+    if len(c2) != 1:
+        return founds
+    id2 = c2[0]._id
+    id2_found = False
 
     # run over all ass and search a match
     for c in file.ownedElements[0].ownedElements:
@@ -167,43 +270,52 @@ def get_diagram_association(c1name, c2name):
 
             # found?
             if id1_found and id2_found:
-                return a
+                founds.append(c)
 
             # reset
             id1_found = False
             id2_found = False
 
-    return False
+    if print_basic_error and len(founds) > 1:
+        print(_('association.double', c1name, c2name, len(founds)))
+
+    return founds
 
 
-def get_diagram_inheritance(parent_name, child_name):
-    parent = get_diagram_class(parent_name)
-    child = get_diagram_class(child_name)
+def get_diagram_inheritance(parent_name, child_name, print_basic_error=True):
+    parent = get_diagram_class(parent_name, print_basic_error)
+    child = get_diagram_class(child_name, print_basic_error)
+    found = []
 
     # exist?
-    if parent is False or child is False:
-        return False
+    if len(parent) != 1 or len(child) != 1:
+        return found
+    parent = parent[0]
+    child = child[0]
 
     # run over all child ass and search a match
-    if hasattr(child,'ownedElements'):
+    if hasattr(child, 'ownedElements'):
         for a in child.ownedElements:
             if a._type != 'UMLGeneralization':
                 continue
 
             if a.target.__dict__['$ref'] == parent._id:
-                return True
-
+                found.append(child)
 
     # run over all parent ass and search a match
-    if hasattr(parent,'ownedElements'):
+    if hasattr(parent, 'ownedElements'):
         for a in parent.ownedElements:
             if a._type != 'UMLGeneralization':
                 continue
 
             if a.source.__dict__['$ref'] == child._id:
-                return a
+                found.append(child)
 
-    return False
+    if print_basic_error:
+        if len(found) != 1:
+            print(_('inheritance.double', parent_name, child_name, len(found)))
+
+    return found
 
 
 def exist_class(name, abstract=False):
@@ -213,22 +325,19 @@ def exist_class(name, abstract=False):
     :param abstract: special stereotype exist
     :return: None
     """
-    cls = get_diagram_class(name)
-    if not cls:
-        print(_t('class.exist', False, name))
-        return
-
-    # exist double?
-    if count_diagram_class(name) > 1:
-        print(_('class.exist.double', name))
+    cls = get_diagram_class(name, True)
+    if len(cls) != 1:
         return
 
     if abstract is False:
         print(_t('class.exist', True, name))
         return
 
+    cls = cls[0]
+
     # check Abstract
-    erg = ('isAbstract' in cls.__dict__ and cls.isAbstract is True) or ('stereotype' in cls.__dict__ and cls.stereotype == 'abstract')
+    erg = ('isAbstract' in cls.__dict__ and cls.isAbstract is True) or (
+                'stereotype' in cls.__dict__ and cls.stereotype == 'abstract')
     print(_t('class.exist.abstract', erg, name))
 
 
@@ -241,24 +350,21 @@ def exist_attribute(cname, name, data=None, visibility=None):
     :param visibility: (Optional) datatype of attribute: +,#,-
     :return: None
     """
-    print("In Klasse", cname, "ist Attribut", name, end="")
-    att = get_diagram_attribute(cname, name)
-    if not att:
-        print(" nicht!")
+    global ignore_case
+
+    att = get_diagram_attribute(cname, name, True)
+    if len(att) != 1:
         return
+    att = att[0]
 
     if visibility is not None and not att.visibility == visDict[visibility]:
-        print(" mit falscher Sichtbarkeit!", end="")
+        print(_t("attribute.visibility", False, cname, name))
 
     if data is None:
-        print(".")
+        print(_("attribute", cname, name))
         return
 
-    print(" mit Datentyp", data, end="")
-    if att.type.lower() == data.lower():
-        print(".")
-    else:
-        print(" nicht!")
+    print(_t("attribute.data", 'type' in att.__dict__ and lower(att.type, data), cname, name, data))
 
 
 def exist_method(cname, name, parameter_in=None, parameter_out=None):
@@ -270,52 +376,47 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
     :param parameter_out: (optional) datatype of return value
     :return: None
     """
-    print("In Klasse", cname, "ist Methode", name, end="")
-    att = get_diagram_method(cname, name)
-    if not att:
-        print(" nicht!")
+    att = get_diagram_method(cname, name, True)
+
+    if len(att) != 1:
         return
 
     if parameter_in is None and parameter_out is None:
-        print(".")
+        print(_t('method', len(att) == 1, cname, name))
         return
+
+    att = att[0]
 
     parameter_in_found = False
     if parameter_in is not None:
-        print(" mit Parameter", parameter_in, end="")
         for p in att.parameters:
-            if p.type == "" and p.name.lower() == parameter_in.lower():
+            if not hasattr(p, 'direction') and lower(p.type, parameter_in):
                 parameter_in_found = True
-    else:
-        parameter_in_found = True
 
     parameter_out_found = False
     if parameter_out is not None:
-        print(" mit Return", parameter_out, end="")
         for p in att.parameters:
-            if hasattr(p, 'direction') and p.direction == "return" and p.type.lower() == parameter_out.lower():
+            if hasattr(p, 'direction') and p.direction == "return" and lower(p.type, parameter_out):
                 parameter_out_found = True
-    else:
-        parameter_out_found = True
 
-    if parameter_in_found and parameter_out_found:
-        print(".")
-    else:
-        print(" nicht!")
+    if not parameter_in is None and not parameter_out is None:
+        print(_t('method.parameter.inout', parameter_in_found and parameter_out_found, cname, name, parameter_in, parameter_out))
+        return
+
+    if not parameter_in is None:
+        print(_t('method.parameter.in', parameter_in_found, cname, name, parameter_in))
+        return
+
+    print(_t('method.parameter.out', parameter_out_found, cname, name, parameter_out))
+
 
 
 def exist_association(c1name, c2name, c1multi=None, c2multi=None):
-    ass = get_diagram_association(c1name, c2name)
-    if c1multi is None:
-        print(_t('association.exist',ass,c1name,c2name))
-        return
+    ass = get_diagram_association(c1name, c2name, True)
 
-    print("Beziehung zwischen", c1name, "und", c2name, "ist", end="")
-    print(" mit Multiplizität", c1multi, "und", c2multi, end="")
-
-    if not ass:
-        print(" nicht!")
+    if len(ass) != 1:
         return
+    ass = ass[0]
 
     id1 = get_diagram_class_id(c1name)
     id1_found = False
@@ -323,28 +424,22 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None):
     id2_found = False
 
     # need to check both ends
-    if id1_found is False and ass.end1.reference.__dict__['$ref'] == id1 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c1multi:
+    if id1_found is False and ass.end1.reference.__dict__[
+        '$ref'] == id1 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c1multi:
         id1_found = True
-    if id1_found is False and ass.end2.reference.__dict__['$ref'] == id1 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c1multi:
+    if id1_found is False and ass.end2.reference.__dict__[
+        '$ref'] == id1 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c1multi:
         id1_found = True
-    if id2_found is False and ass.end1.reference.__dict__['$ref'] == id2 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c2multi:
+    if id2_found is False and ass.end1.reference.__dict__[
+        '$ref'] == id2 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c2multi:
         id2_found = True
-    if id2_found is False and ass.end2.reference.__dict__['$ref'] == id2 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c2multi:
+    if id2_found is False and ass.end2.reference.__dict__[
+        '$ref'] == id2 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c2multi:
         id2_found = True
 
-    if id1_found and id2_found:
-        print(".")
-    else:
-        print(" nicht!")
+    print(_t('association.multiplicity', id1_found and id2_found, c1name, c2name, c1multi, c2multi))
 
 
 def exist_inheritance(c1name, c2name):
-    print("Vererbung zwischen", c1name, "und", c2name, "ist", end="")
-    ass = get_diagram_inheritance(c1name, c2name)
-
-    if not ass:
-        print(" nicht!")
-    else:
-        print(".")
-
-
+    ass = get_diagram_inheritance(c1name, c2name, True)
+    print(_t('inheritance', len(ass) == 1, c1name, c2name))
