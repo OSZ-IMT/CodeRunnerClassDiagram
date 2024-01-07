@@ -6,11 +6,15 @@ from libV2 import exist_inheritance
 from libV2 import version
 from libV2 import list_diagram_class
 
-version()
-
 file = load_file('stundenplan.mdj')
 
+exist_association("Unterricht", "Raum", 1, 1)
+exist_association("Unterricht", "Raum", aggregation='composite')
+exist_association("Klasse", "Schüler", aggregation='composite')
+
 list_diagram_class()
+
+
 
 # test1
 exist_class("Schüler")
@@ -54,7 +58,7 @@ exist_association("Raum", "Unterricht", "1", "*")
 
 exist_association("Klasse", "Unterricht", "1", "1..*")
 
-# TODO exist_association("Klasse", "Schüler", "1", "1..*")
+exist_association("Klasse", "Schüler")
 
 exist_inheritance("Person", "Schüler")
 

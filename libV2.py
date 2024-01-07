@@ -28,7 +28,9 @@ lang = {
         'association.no': 'Beziehung zwischen {arg0} und {arg1} ist nicht!',
         'association.double': '!Assoziation zwischen {arg0}-{arg1} existiert {arg2}x im Modell.',
         'association.multiplicity': 'Beziehung zwischen {arg0} und {arg1} ist mit Multiplizität {arg2} und {arg3}.',
-        'association.multiplicity.no': '!Assoziation {arg2}x {arg0} zu {arg3}x {arg1} existiert nicht',
+        'association.multiplicity.no': '!Assoziation {arg2}x {arg0} zu {arg3}x {arg1} existiert nicht.',
+        'association.aggregation': 'Aggregation {arg2} {arg0} zu {arg1} existiert.',
+        'association.aggregation.no': '!Aggregation {arg2} {arg0} zu {arg1} existiert nicht.',
         'inheritance': 'Vererbung zwischen {arg0} und {arg1} ist nicht.',
         'inheritance.no': '!Vererbung zwischen {arg0} und {arg1} existiert nicht.',
         'inheritance.double': '!Vererbung zwischen {arg0} und {arg1} {arg2}x im Modell.',
@@ -132,7 +134,9 @@ def load_file(name):
     """
     try:
         global file
-        data = Path(name).read_text()
+        # data = Path(name).read_text()
+        with open(name, "r", encoding="utf-8") as f:
+            data = f.read()
         file = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
         return file
     except:
@@ -270,7 +274,7 @@ def get_diagram_association(c1name, c2name, print_basic_error=False):
 
             # found?
             if id1_found and id2_found:
-                founds.append(c)
+                founds.append(a)
 
             # reset
             id1_found = False
@@ -410,20 +414,45 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
     print(_t('method.parameter.out', parameter_out_found, cname, name, parameter_out))
 
 
-
-def exist_association(c1name, c2name, c1multi=None, c2multi=None):
+def exist_association(c1name, c2name, c1multi=None, c2multi=None, aggregation=None):
+    """
+    Check if the association between c1name and c2name exist with multiplicity c1multi and c2multi
+    :param c1name:
+    :param c2name:
+    :param c1multi: multiplicity for class c1name
+    :param c2multi: multiplicity for class c2name
+    :param aggregation: composite
+    :return:
+    """
     ass = get_diagram_association(c1name, c2name, True)
 
     if len(ass) != 1:
         return
     ass = ass[0]
 
+    if c1multi is None and c2multi is None and aggregation is None:
+        print(_('association', c1name, c2name))
+        return
+
     id1 = get_diagram_class_id(c1name)
     id1_found = False
     id2 = get_diagram_class_id(c2name)
     id2_found = False
 
+    if aggregation is not None:
+        if id1_found is False and ass.end1.reference.__dict__[
+            '$ref'] == id1 and 'aggregation' in ass.end1.__dict__ and ass.end1.aggregation == aggregation:
+            id1_found = True
+        if id1_found is False and ass.end2.reference.__dict__[
+            '$ref'] == id1 and 'aggregation' in ass.end2.__dict__ and ass.end2.aggregation == aggregation:
+            id1_found = True
+
+        print(_t('association.aggregation', id1_found, c1name, c2name, aggregation))
+        return
+
+
     # need to check both ends
+
     if id1_found is False and ass.end1.reference.__dict__[
         '$ref'] == id1 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c1multi:
         id1_found = True
