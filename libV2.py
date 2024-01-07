@@ -1,8 +1,7 @@
-# Version 2 - 231216
+# Version 2 - 240107
 
 import json
 from types import SimpleNamespace
-from pathlib import Path
 
 file = None
 visDict = {'-': 'private', '+': 'public', '#': 'protected'}
@@ -49,7 +48,7 @@ lang_default = 'de'
 
 
 def version():
-    print("231215")
+    print("240107")
 
 
 def lower(a, b):
