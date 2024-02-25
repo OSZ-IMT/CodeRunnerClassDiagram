@@ -1,4 +1,4 @@
-import libV2 as lib
+import staruml_classdiagramm as lib
 
 file = lib.load_file('stamm2.mdj')
 

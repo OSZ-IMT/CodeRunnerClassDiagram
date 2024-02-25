@@ -1,9 +1,9 @@
-from libV2 import load_file
-from libV2 import exist_class
-from libV2 import exist_attribute
-from libV2 import exist_association
-from libV2 import exist_inheritance
-from libV2 import version
+from staruml_classdiagramm import load_file
+from staruml_classdiagramm import exist_class
+from staruml_classdiagramm import exist_attribute
+from staruml_classdiagramm import exist_association
+from staruml_classdiagramm import exist_inheritance
+from staruml_classdiagramm import version
 
 version()
 
