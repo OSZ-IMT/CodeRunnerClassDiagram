@@ -23,11 +23,12 @@ lang = {
         'attribute.visibility.no': 'In Klasse {arg0} ist Attribut {arg1} mit falscher Sichtbarkeit.',
         'attribute.data': 'In Klasse {arg0} ist Attribut {arg1} mit Datentyp {arg2}.',
         'attribute.data.no': '!Attribut {arg0}.{arg1}: {arg2} exisitiert nicht',
-        'association': 'Beziehung zwischen {arg0} und {arg1} ist.',
-        'association.no': 'Beziehung zwischen {arg0} und {arg1} ist nicht!',
+        'association': 'Assoziation zwischen {arg0} und {arg1} existiert.',
+        'association.no': '!Assoziation zwischen {arg0} und {arg1} existiert nicht',
         'association.double': '!Assoziation zwischen {arg0}-{arg1} existiert {arg2}x im Modell.',
-        'association.multiplicity': 'Beziehung zwischen {arg0} und {arg1} ist mit Multiplizität {arg2} und {arg3}.',
-        'association.multiplicity.no': '!Assoziation {arg2}x {arg0} zu {arg3}x {arg1} existiert nicht.',
+        'association.multiplicity': 'Assoziation zwischen {arg2} {arg0} zu {arg3} {arg1} existiert.',
+        'association.multiplicity.missing': 'Assoziation zwischen {arg0} zu {arg1} enthält keine Multiplizität.',
+        'association.multiplicity.no': '!Assoziation zwischen {arg2} {arg0} zu {arg3} {arg1} existiert mit.',
         'association.aggregation': 'Aggregation {arg2} {arg0} zu {arg1} existiert.',
         'association.aggregation.no': '!Aggregation {arg2} {arg0} zu {arg1} existiert nicht.',
         'inheritance': 'Vererbung zwischen {arg0} und {arg1} ist nicht.',
@@ -48,7 +49,7 @@ lang_default = 'de'
 
 
 def version():
-    print("240107")
+    print("240314")
 
 
 def lower(a, b):
@@ -62,10 +63,10 @@ def lower(a, b):
 
     # convert case?
     if ignore_case:
-        for i in range(0,len(a)):
+        for i in range(0, len(a)):
             a[i] = a[i].lower()
 
-        for i in range(0,len(b)):
+        for i in range(0, len(b)):
             b[i] = b[i].lower()
 
     # add replaces
@@ -340,7 +341,7 @@ def exist_class(name, abstract=False):
 
     # check Abstract
     erg = ('isAbstract' in cls.__dict__ and cls.isAbstract is True) or (
-                'stereotype' in cls.__dict__ and cls.stereotype == 'abstract')
+            'stereotype' in cls.__dict__ and cls.stereotype == 'abstract')
     print(_t('class.exist.abstract', erg, name))
 
 
@@ -403,7 +404,8 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
                 parameter_out_found = True
 
     if not parameter_in is None and not parameter_out is None:
-        print(_t('method.parameter.inout', parameter_in_found and parameter_out_found, cname, name, parameter_in, parameter_out))
+        print(_t('method.parameter.inout', parameter_in_found and parameter_out_found, cname, name, parameter_in,
+                 parameter_out))
         return
 
     if not parameter_in is None:
@@ -437,35 +439,40 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None, aggregation=No
     id1_found = False
     id2 = get_diagram_class_id(c2name)
     id2_found = False
+    ass1ref = ass.end1.reference.__dict__['$ref']
+    ass2ref = ass.end2.reference.__dict__['$ref']
 
     if aggregation is not None:
-        if id1_found is False and ass.end1.reference.__dict__[
-            '$ref'] == id1 and 'aggregation' in ass.end1.__dict__ and ass.end1.aggregation == aggregation:
+        if id1_found is False and ass1ref == id1 and 'aggregation' in ass.end1.__dict__ and ass.end1.aggregation == aggregation:
             id1_found = True
-        if id1_found is False and ass.end2.reference.__dict__[
-            '$ref'] == id1 and 'aggregation' in ass.end2.__dict__ and ass.end2.aggregation == aggregation:
+        if id1_found is False and ass1ref == id1 and 'aggregation' in ass.end2.__dict__ and ass.end2.aggregation == aggregation:
             id1_found = True
 
         print(_t('association.aggregation', id1_found, c1name, c2name, aggregation))
         return
 
+    # has muliplicity?
+    if 'multiplicity' not in ass.end1.__dict__ or 'multiplicity' not in ass.end1.__dict__:
+        print(_('association.multiplicity.missing', c1name, c2name))
+
+    e1m = c1multi
+    e2m = c2multi
 
     # need to check both ends
-
-    if id1_found is False and ass.end1.reference.__dict__[
-        '$ref'] == id1 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c1multi:
+    if id1_found is False and ass1ref == id1 and lower(ass.end1.multiplicity, c1multi):
         id1_found = True
-    if id1_found is False and ass.end2.reference.__dict__[
-        '$ref'] == id1 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c1multi:
+        e1m = ass.end1.multiplicity
+    if id1_found is False and ass1ref == id2 and lower(ass.end2.multiplicity, c1multi):
         id1_found = True
-    if id2_found is False and ass.end1.reference.__dict__[
-        '$ref'] == id2 and 'multiplicity' in ass.end1.__dict__ and ass.end1.multiplicity == c2multi:
+        e1m = ass.end2.multiplicity
+    if id2_found is False and ass2ref == id1 and lower(ass.end1.multiplicity, c2multi):
         id2_found = True
-    if id2_found is False and ass.end2.reference.__dict__[
-        '$ref'] == id2 and 'multiplicity' in ass.end2.__dict__ and ass.end2.multiplicity == c2multi:
+        e2m = ass.end1.multiplicity
+    if id2_found is False and ass2ref == id2 and lower(ass.end2.multiplicity, c2multi):
         id2_found = True
+        e2m = ass.end2.multiplicity
 
-    print(_t('association.multiplicity', id1_found and id2_found, c1name, c2name, c1multi, c2multi))
+    print(_t('association.multiplicity', id1_found and id2_found, c1name, c2name, e1m, e2m))
 
 
 def exist_inheritance(c1name, c2name):
