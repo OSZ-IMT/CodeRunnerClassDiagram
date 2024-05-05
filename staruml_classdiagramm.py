@@ -19,10 +19,10 @@ lang = {
         'class.exist.abstract.no': 'Klasse {arg0} ist abstract nicht!',
         'attribute': 'In Klasse {arg0} ist Attribut {arg1}.',
         'attribute.double': '!Attribut {arg0}.{arg1} existiert {arg2}x im Modell.',
-        'attribute.no': 'In Klasse {arg0} ist Attribut {arg1} nicht!',
-        'attribute.visibility.no': 'In Klasse {arg0} ist Attribut {arg1} mit falscher Sichtbarkeit.',
+        'attribute.no': '!Attribut {arg0}.{arg1} fehlt!',
+        'attribute.visibility.no': '!Attribut {arg0}.{arg1} hat falsche/keine Sichtbarkeit.',
         'attribute.data': 'In Klasse {arg0} ist Attribut {arg1} mit Datentyp {arg2}.',
-        'attribute.data.no': '!Attribut {arg0}.{arg1}: {arg2} exisitiert nicht',
+        'attribute.data.no': '!Attribut {arg0}.{arg1}: {arg2} exisitiert nicht.',
         'association': 'Assoziation zwischen {arg0} und {arg1} existiert.',
         'association.no': '!Assoziation zwischen {arg0} und {arg1} existiert nicht',
         'association.double': '!Assoziation zwischen {arg0}-{arg1} existiert {arg2}x im Modell.',
@@ -37,6 +37,7 @@ lang = {
         'method': 'In Klasse {arg0} ist Methode {arg1}.',
         'method.no': '!Methode {arg0}.{arg1}() existiert nicht.',
         'method.double': '!Methode {arg0}.{arg1}() existiert {arg2}x im Modell.',
+        'method.parameter.no': '!Methode {arg0}.{arg1}(): hat keine Parameter ({arg2}/{arg3}).',
         'method.parameter.in': 'Methode {arg0}.{arg1}({arg2}) existiert.',
         'method.parameter.in.no': '!Methode {arg0}.{arg1}({arg2}) existiert nicht.',
         'method.parameter.out': 'Methode {arg0}.{arg1}(): {arg2} existiert.',
@@ -361,8 +362,9 @@ def exist_attribute(cname, name, data=None, visibility=None):
         return
     att = att[0]
 
-    if visibility is not None and not att.visibility == visDict[visibility]:
+    if visibility is not None and (not hasattr(att, visibility) or not att.visibility == visDict[visibility]):
         print(_t("attribute.visibility", False, cname, name))
+        return
 
     if data is None:
         print(_("attribute", cname, name))
@@ -391,6 +393,10 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
 
     att = att[0]
 
+    if not hasattr(att, 'parameters'):
+        print(_('method.parameter.no', cname, name, parameter_in, parameter_out))
+        return
+
     parameter_in_found = False
     if parameter_in is not None:
         parameter_in_id = get_diagram_class_id(parameter_in)
@@ -398,7 +404,7 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
             parameter_in_id = parameter_in
 
         for p in att.parameters:
-            if not hasattr(p, 'direction') and ((not isinstance(p.type, SimpleNamespace) and lower(parameter_in_id, p.type)) or (hasattr(p.type, '$ref') and parameter_in_id == p.type.__dict__['$ref'])):
+            if not hasattr(p, 'direction') and hasattr(p, 'type') and ((not isinstance(p.type, SimpleNamespace) and lower(parameter_in_id, p.type)) or (hasattr(p.type, '$ref') and parameter_in_id == p.type.__dict__['$ref'])):
                 parameter_in_found = True
 
     parameter_out_found = False
@@ -408,7 +414,7 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
             parameter_out_id = parameter_out
 
         for p in att.parameters:
-            if hasattr(p, 'direction') and p.direction == "return" and ((not isinstance(p.type, SimpleNamespace) and lower(parameter_out_id, p.type)) or (hasattr(p.type, '$ref') and parameter_out_id == p.type.__dict__['$ref'])):
+            if hasattr(p, 'direction') and p.direction == "return" and hasattr(p, 'type') and ((not isinstance(p.type, SimpleNamespace) and lower(parameter_out_id, p.type)) or (hasattr(p.type, '$ref') and parameter_out_id == p.type.__dict__['$ref'])):
                 parameter_out_found = True
 
     if not parameter_in is None and not parameter_out is None:

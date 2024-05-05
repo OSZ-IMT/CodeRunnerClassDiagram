@@ -9,20 +9,25 @@ from staruml_classdiagramm import alternative
 
 version()
 
+file = load_file('A3.4_Joshi.mdj')
 file = load_file('A34.mdj')
+
 
 alternative('*',['0..*'])
 
 # tests
-# exist_method('Ladung', 'getName', None, 'String')
-# exist_method('Ladung', 'setName', 'String')
-#
-# exist_method('Raumschiff', 'addLadung', 'Ladung')
-# exist_method('Raumschiff', 'removeLadung', 'Ladung')
-#
-# exist_method('Ladung', 'getVolumen', None, ['int', 'double', 'float'])
-# exist_method('Ladung', 'setVolumen', ['int', 'double', 'float'])
-#
-# exist_method('Raumschiff', 'fliegen', 'int')
+exist_attribute('Ladung', 'name', 'String', '-')
+exist_attribute('Ladung', 'volumen', ['int', 'double', 'float'], '-')
+
+exist_method('Ladung', 'getName', None, 'String')
+exist_method('Ladung', 'setName', 'String')
+
+exist_method('Raumschiff', 'addLadung', 'Ladung')
+exist_method('Raumschiff', 'removeLadung', 'Ladung')
+
+exist_method('Ladung', 'getVolumen', None, ['int', 'double', 'float'])
+exist_method('Ladung', 'setVolumen', ['int', 'double', 'float'])
+
+exist_method('Raumschiff', 'fliegen', 'int')
 exist_method('Raumschiff', 'schiessen', 'Raumschiff')
 exist_method('Raumschiff', 'treffer', 'Raumschiff')
