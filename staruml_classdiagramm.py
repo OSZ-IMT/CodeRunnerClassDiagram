@@ -393,14 +393,22 @@ def exist_method(cname, name, parameter_in=None, parameter_out=None):
 
     parameter_in_found = False
     if parameter_in is not None:
+        parameter_in_id = get_diagram_class_id(parameter_in)
+        if not parameter_in_id:
+            parameter_in_id = parameter_in
+
         for p in att.parameters:
-            if not hasattr(p, 'direction') and lower(p.type, parameter_in):
+            if not hasattr(p, 'direction') and ((not isinstance(p.type, SimpleNamespace) and lower(parameter_in_id, p.type)) or (hasattr(p.type, '$ref') and parameter_in_id == p.type.__dict__['$ref'])):
                 parameter_in_found = True
 
     parameter_out_found = False
     if parameter_out is not None:
+        parameter_out_id = get_diagram_class_id(parameter_out)
+        if not parameter_out_id:
+            parameter_out_id = parameter_out
+
         for p in att.parameters:
-            if hasattr(p, 'direction') and p.direction == "return" and lower(p.type, parameter_out):
+            if hasattr(p, 'direction') and p.direction == "return" and ((not isinstance(p.type, SimpleNamespace) and lower(parameter_out_id, p.type)) or (hasattr(p.type, '$ref') and parameter_out_id == p.type.__dict__['$ref'])):
                 parameter_out_found = True
 
     if not parameter_in is None and not parameter_out is None:
@@ -443,7 +451,6 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None, aggregation=No
     ass2ref = ass.end2.reference.__dict__['$ref']
 
     if aggregation is not None:
-        print(ass)
 
         if id1_found is False and ass1ref == id1 and 'aggregation' in ass.end1.__dict__ and ass.end1.aggregation == aggregation:
             id1_found = True
