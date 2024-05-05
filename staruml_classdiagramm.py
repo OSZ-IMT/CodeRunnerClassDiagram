@@ -1,4 +1,4 @@
-# Version 2 - 240107
+# Version 2 - 240505
 
 import json
 from types import SimpleNamespace
@@ -49,7 +49,7 @@ lang_default = 'de'
 
 
 def version():
-    print("240314")
+    print("240505")
 
 
 def lower(a, b):
@@ -422,7 +422,7 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None, aggregation=No
     :param c2name:
     :param c1multi: multiplicity for class c1name
     :param c2multi: multiplicity for class c2name
-    :param aggregation: composite
+    :param aggregation: composite or shared
     :return:
     """
     ass = get_diagram_association(c1name, c2name, True)
@@ -443,9 +443,11 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None, aggregation=No
     ass2ref = ass.end2.reference.__dict__['$ref']
 
     if aggregation is not None:
+        print(ass)
+
         if id1_found is False and ass1ref == id1 and 'aggregation' in ass.end1.__dict__ and ass.end1.aggregation == aggregation:
             id1_found = True
-        if id1_found is False and ass1ref == id1 and 'aggregation' in ass.end2.__dict__ and ass.end2.aggregation == aggregation:
+        if id1_found is False and ass2ref == id1 and 'aggregation' in ass.end2.__dict__ and ass.end2.aggregation == aggregation:
             id1_found = True
 
         print(_t('association.aggregation', id1_found, c1name, c2name, aggregation))
