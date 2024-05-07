@@ -9,7 +9,6 @@ from staruml_classdiagramm import alternative
 
 version()
 
-file = load_file('A3.4_Joshi.mdj')
 file = load_file('A34.mdj')
 
 

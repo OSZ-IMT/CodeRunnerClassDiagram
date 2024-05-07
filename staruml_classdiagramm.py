@@ -362,7 +362,7 @@ def exist_attribute(cname, name, data=None, visibility=None):
         return
     att = att[0]
 
-    if visibility is not None and (not hasattr(att, visibility) or not att.visibility == visDict[visibility]):
+    if visibility is not None and (not hasattr(att, visibility) and not lower(att.visibility, visDict[visibility])):
         print(_t("attribute.visibility", False, cname, name))
         return
 

@@ -527,9 +527,9 @@
 										"$ref": "AAAAAAGPJXXO355F76Y="
 									},
 									"font": "Arial;13;0",
-									"left": 255,
+									"left": 254,
 									"top": 188,
-									"width": 5.05908203125,
+									"width": 6.5,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -2263,9 +2263,9 @@
 										"$ref": "AAAAAAGPJaIZ07DYT+w="
 									},
 									"font": "Arial;13;0",
-									"left": 505,
+									"left": 504,
 									"top": 139,
-									"width": 5.05908203125,
+									"width": 6.5,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -2741,7 +2741,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJXWIH53pVj8="
 							},
-							"name": "nummer"
+							"name": "nummer",
+							"type": ""
 						}
 					]
 				},
@@ -2759,7 +2760,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJXW4954aRLQ="
 							},
-							"name": "name"
+							"name": "name",
+							"type": ""
 						}
 					]
 				},
@@ -2838,7 +2840,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJZvIPp8Dqu8="
 							},
-							"name": "fahrtnummer"
+							"name": "fahrtnummer",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2846,7 +2849,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJZvIPp8Dqu8="
 							},
-							"name": "zustand"
+							"name": "zustand",
+							"type": ""
 						}
 					]
 				},
@@ -2895,7 +2899,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJZw0Jp+m00M="
 							},
-							"name": "zugnummer"
+							"name": "zugnummer",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2903,7 +2908,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJZw0Jp+m00M="
 							},
-							"name": "baureihe"
+							"name": "baureihe",
+							"type": ""
 						}
 					]
 				},
@@ -2953,7 +2959,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJaChlamQP8g="
 							},
-							"name": "ankunft"
+							"name": "ankunft",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2961,7 +2968,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGPJaChlamQP8g="
 							},
-							"name": "abfahrt"
+							"name": "abfahrt",
+							"type": ""
 						}
 					],
 					"operations": [
