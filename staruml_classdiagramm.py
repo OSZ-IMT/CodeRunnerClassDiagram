@@ -1,4 +1,4 @@
-# Version 2 - 240918
+# Version 2 - 240929
 
 import json
 from types import SimpleNamespace
@@ -18,13 +18,15 @@ lang = {
         'class.exist.abstract': 'Klasse {arg0} ist abstract.',
         'class.exist.abstract.no': 'Klasse {arg0} ist abstract nicht!',
         'attribute': 'Attribut {arg0}.{arg1} existiert.',
+        'attribute.count': 'Klasse {arg0} hat {arg1} Attribute.',
+        'attribute.count.visibility': 'Klasse {arg0} hat {arg2}{arg1} Attribute.',
         'attribute.double': '!Attribut {arg0}.{arg1} existiert {arg2}x im Modell.',
         'attribute.no': '!Attribut {arg0}.{arg1} fehlt!',
         'attribute.visibility.no': '!Attribut {arg0}.{arg1} hat falsche/keine Sichtbarkeit.',
-        'attribute.data': 'Attribut {arg3}{arg0}.{arg1}: {arg2} exisitiert.',
-        'attribute.data.no': '!Attribut {arg3}{arg0}.{arg1}: {arg2} exisitiert nicht.',
-        'attribute.default': 'Attribut {arg3}{arg0}.{arg1}: {arg2} = {arg4} exisitiert.',
-        'attribute.default.no': '!Attribut {arg3}{arg0}.{arg1}: {arg2} = {arg4} exisitiert nicht.',
+        'attribute.data': 'Attribut {arg3}{arg0}.{arg1}: {arg2} existiert.',
+        'attribute.data.no': '!Attribut {arg3}{arg0}.{arg1}: {arg2} existiert nicht.',
+        'attribute.default': 'Attribut {arg3}{arg0}.{arg1}: {arg2} = {arg4} existiert.',
+        'attribute.default.no': '!Attribut {arg3}{arg0}.{arg1}: {arg2} = {arg4} existiert nicht.',
         'association': 'Assoziation zwischen {arg0} und {arg1} existiert.',
         'association.no': '!Assoziation zwischen {arg0} und {arg1} existiert nicht',
         'association.double': '!Assoziation zwischen {arg0}-{arg1} existiert {arg2}x im Modell.',
@@ -52,7 +54,7 @@ lang_default = 'de'
 
 
 def version():
-    print("240918")
+    print("240929")
 
 
 def lower(a, b):
@@ -385,6 +387,28 @@ def exist_attribute(cname, name, data=None, visibility=None, defaultValue=None):
         return
 
     print(_t("attribute.default", t and 'defaultValue' in att.__dict__ and lower(att.defaultValue, defaultValue), cname, name, data, visibility, defaultValue))
+
+
+def exist_attribute_count(cname, visibility=None):
+    """
+    Print the number of attributes for this class
+    :param cname: name of class
+    :param visibility: visibility of attributes to count
+    :return: None
+    """
+    cl = get_diagram_class(cname, True)
+    if len(cl) != 1:
+        return
+
+    cl = cl[0]
+    count = 0
+
+    if 'attributes' in cl.__dict__:
+        for e in cl.attributes:
+            if e._type == "UMLAttribute":
+                count+=1
+
+    print(_('attribute.count', cname, count))
 
 
 def exist_method(cname, name, parameter_in=None, parameter_out=None):
