@@ -1,4 +1,4 @@
-# Version 2 - 240505
+# Version 2 - 240918
 
 import json
 from types import SimpleNamespace
@@ -11,30 +11,32 @@ alternative_dir = {}
 lang = {
     'de': {
         'file_missing': 'StarUML Klassendiagramm "{arg0}" nicht gefunden.',
-        'class.exist': 'Klasse {arg0} ist.',
+        'class.exist': 'Klasse {arg0} existiert.',
         'class.double': '!Klasse {arg0} existiert {arg1}x im Modell.',
         'class.stereotype': '!Klasse {arg0} hat unbekannten Stereotype {arg1}.',
         'class.exist.no': 'Klasse {arg0} ist nicht!',
         'class.exist.abstract': 'Klasse {arg0} ist abstract.',
         'class.exist.abstract.no': 'Klasse {arg0} ist abstract nicht!',
-        'attribute': 'In Klasse {arg0} ist Attribut {arg1}.',
+        'attribute': 'Attribut {arg0}.{arg1} existiert.',
         'attribute.double': '!Attribut {arg0}.{arg1} existiert {arg2}x im Modell.',
         'attribute.no': '!Attribut {arg0}.{arg1} fehlt!',
         'attribute.visibility.no': '!Attribut {arg0}.{arg1} hat falsche/keine Sichtbarkeit.',
-        'attribute.data': 'In Klasse {arg0} ist Attribut {arg1} mit Datentyp {arg2}.',
-        'attribute.data.no': '!Attribut {arg0}.{arg1}: {arg2} exisitiert nicht.',
+        'attribute.data': 'Attribut {arg3}{arg0}.{arg1}: {arg2} exisitiert.',
+        'attribute.data.no': '!Attribut {arg3}{arg0}.{arg1}: {arg2} exisitiert nicht.',
+        'attribute.default': 'Attribut {arg3}{arg0}.{arg1}: {arg2} = {arg4} exisitiert.',
+        'attribute.default.no': '!Attribut {arg3}{arg0}.{arg1}: {arg2} = {arg4} exisitiert nicht.',
         'association': 'Assoziation zwischen {arg0} und {arg1} existiert.',
         'association.no': '!Assoziation zwischen {arg0} und {arg1} existiert nicht',
         'association.double': '!Assoziation zwischen {arg0}-{arg1} existiert {arg2}x im Modell.',
         'association.multiplicity': 'Assoziation zwischen {arg2} {arg0} zu {arg3} {arg1} existiert.',
         'association.multiplicity.missing': 'Assoziation zwischen {arg0} zu {arg1} enthält keine Multiplizität.',
-        'association.multiplicity.no': '!Assoziation zwischen {arg2} {arg0} zu {arg3} {arg1} existiert mit.',
+        'association.multiplicity.no': '!Assoziation zwischen {arg2} {arg0} zu {arg3} {arg1} existiert nicht.',
         'association.aggregation': 'Aggregation {arg2} {arg0} zu {arg1} existiert.',
         'association.aggregation.no': '!Aggregation {arg2} {arg0} zu {arg1} existiert nicht.',
-        'inheritance': 'Vererbung zwischen {arg0} und {arg1} ist nicht.',
+        'inheritance': 'Vererbung zwischen {arg0} und {arg1} existiert.',
         'inheritance.no': '!Vererbung zwischen {arg0} und {arg1} existiert nicht.',
-        'inheritance.double': '!Vererbung zwischen {arg0} und {arg1} {arg2}x im Modell.',
-        'method': 'In Klasse {arg0} ist Methode {arg1}.',
+        'inheritance.double': '!Vererbung zwischen {arg0} und {arg1} ist {arg2}x im Modell.',
+        'method': 'Methode {arg0}.{arg1}() existiert.',
         'method.no': '!Methode {arg0}.{arg1}() existiert nicht.',
         'method.double': '!Methode {arg0}.{arg1}() existiert {arg2}x im Modell.',
         'method.parameter.no': '!Methode {arg0}.{arg1}(): hat keine Parameter ({arg2}/{arg3}).',
@@ -50,7 +52,7 @@ lang_default = 'de'
 
 
 def version():
-    print("240505")
+    print("240918")
 
 
 def lower(a, b):
@@ -97,7 +99,7 @@ def alternative(base, replace):
     alternative_dir[base] = replace
 
 
-def _(txt, arg0=None, arg1=None, arg2=None, arg3=None):
+def _(txt, arg0=None, arg1=None, arg2=None, arg3=None, arg4=None):
     """
     Translate a text
     :param txt:
@@ -111,10 +113,11 @@ def _(txt, arg0=None, arg1=None, arg2=None, arg3=None):
 
     if arg0 is None:
         return key
-    return key.format(arg0=arg0, arg1=arg1, arg2=arg2, arg3=arg3)
+
+    return key.format(arg0=arg0, arg1=arg1, arg2=arg2, arg3=arg3, arg4=arg4)
 
 
-def _t(txt, yes, arg0=None, arg1=None, arg2=None, arg3=None):
+def _t(txt, yes, arg0=None, arg1=None, arg2=None, arg3=None, arg4=None):
     """
     Translate a text
     :param txt:
@@ -123,8 +126,8 @@ def _t(txt, yes, arg0=None, arg1=None, arg2=None, arg3=None):
     :return:
     """
     if (yes):
-        return _(txt, arg0, arg1, arg2, arg3)
-    return _(txt + ".no", arg0, arg1, arg2, arg3)
+        return _(txt, arg0, arg1, arg2, arg3, arg4)
+    return _(txt + ".no", arg0, arg1, arg2, arg3, arg4)
 
 
 def load_file(name):
@@ -346,13 +349,14 @@ def exist_class(name, abstract=False):
     print(_t('class.exist.abstract', erg, name))
 
 
-def exist_attribute(cname, name, data=None, visibility=None):
+def exist_attribute(cname, name, data=None, visibility=None, defaultValue=None):
     """
     Check if attribute of this class exist and print a message
     :param cname: name of class
     :param name: name of attribute
     :param data: (Optional) datatype of attribute
     :param visibility: (Optional) datatype of attribute: +,#,-
+    :param defaultValue: (Optional) default value of attribute
     :return: None
     """
     global ignore_case
@@ -362,15 +366,25 @@ def exist_attribute(cname, name, data=None, visibility=None):
         return
     att = att[0]
 
-    if visibility is not None and (not hasattr(att, visibility) and not lower(att.visibility, visDict[visibility])):
-        print(_t("attribute.visibility", False, cname, name))
-        return
-
     if data is None:
         print(_("attribute", cname, name))
         return
 
-    print(_t("attribute.data", 'type' in att.__dict__ and lower(att.type, data), cname, name, data))
+    # set default visibility
+    if not hasattr(att, 'visibility'):
+        att.visibility = 'public'
+
+    if visibility is not None and not lower(att.visibility, visDict[visibility]):
+        print(_t("attribute.visibility", False, cname, name))
+        return
+
+    t = 'type' in att.__dict__ and lower(att.type, data)
+
+    if defaultValue is None:
+        print(_t("attribute.data", t, cname, name, data, visibility))
+        return
+
+    print(_t("attribute.default", t and 'defaultValue' in att.__dict__ and lower(att.defaultValue, defaultValue), cname, name, data, visibility, defaultValue))
 
 
 def exist_method(cname, name, parameter_in=None, parameter_out=None):
