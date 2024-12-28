@@ -12,11 +12,11 @@ lang = {
     'de': {
         'file_missing': 'StarUML Klassendiagramm "{arg0}" nicht gefunden.',
         'class.exist': 'Klasse {arg0} existiert.',
-        'class.double': '!Klasse {arg0} existiert {arg1}x im Modell.',
+        'class.double': '!Klasse {arg0} existiert {arg1}x im ersten Modell.',
         'class.stereotype': '!Klasse {arg0} hat unbekannten Stereotype {arg1}.',
-        'class.exist.no': 'Klasse {arg0} ist nicht!',
+        'class.exist.no': '!Klasse {arg0} existiert nicht im ersten Modell. Ist Sie in einem anderen Modell?',
         'class.exist.abstract': 'Klasse {arg0} ist abstract.',
-        'class.exist.abstract.no': 'Klasse {arg0} ist abstract nicht!',
+        'class.exist.abstract.no': '!Klasse {arg0} existiert abstract nicht.',
         'attribute': 'Attribut {arg0}.{arg1} existiert.',
         'attribute.count': 'Klasse {arg0} hat {arg1} Attribute.',
         'attribute.count.visibility': 'Klasse {arg0} hat {arg2}{arg1} Attribute.',
@@ -165,7 +165,10 @@ def get_diagram_class(name, print_basic_error=False):
                 founds.append(e)
 
     if print_basic_error:
-        if len(founds) != 1:
+        if len(founds) == 0:
+            print(_('class.exist.no', name))
+
+        if len(founds) >= 2:
             print(_('class.double', name, len(founds)))
 
         if len(founds) == 1 and 'stereotype' in founds[0].__dict__:
@@ -507,6 +510,7 @@ def exist_association(c1name, c2name, c1multi=None, c2multi=None, aggregation=No
     # has muliplicity?
     if 'multiplicity' not in ass.end1.__dict__ or 'multiplicity' not in ass.end1.__dict__:
         print(_('association.multiplicity.missing', c1name, c2name))
+        return
 
     e1m = c1multi
     e2m = c2multi

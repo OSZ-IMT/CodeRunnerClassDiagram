@@ -10,7 +10,7 @@ version()
 file = load_file('A42.mdj')
 
 # tests
-exist_attribute_count("Employee")
+exist_attribute_count("Employee2")
 exist_attribute_count("Customer")
 exist_attribute("Customer", "id", "int", "-")
 exist_attribute("Customer", "firstname")
